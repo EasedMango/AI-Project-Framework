@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # Keep libs
 !libs/
+!libs/**/x64/
