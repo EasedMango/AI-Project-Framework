@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{c22ab9c9-2a3a-4755-bd54-cd87e8831217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDL">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{5230456c-fddb-49fb-9496-2f411554b4a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{a87bc191-f8ff-4218-823d-4a6b21692881}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{81a63cb3-99db-4bf5-8d86-49f46cc1285e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Components">
+      <UniqueIdentifier>{6114154f-1656-4d5d-8a84-06e679376f64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Systems">
+      <UniqueIdentifier>{897f86fb-7b51-4db5-9ea0-47cb8c168559}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\CommonECS.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentManager.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ECS.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\EntityManager.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ISystem.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Query.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Registry.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\SparseSet.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\SystemManager.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerMovementSystem.h">
+      <Filter>Framework\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Movement.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementSystem.h">
+      <Filter>Framework\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandler.cpp">
+      <Filter>SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\ComponentManager.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\ECS.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\EntityManager.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Query.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\Registry.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\SparseSet.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\SystemManager.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMovementSystem.cpp">
+      <Filter>Framework\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="MovementSystem.cpp">
+      <Filter>Framework\Systems</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
