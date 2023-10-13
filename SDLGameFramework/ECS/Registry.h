@@ -35,13 +35,22 @@ private:
 			std::iter_swap(it, entities.end() - 1);
 			entities.pop_back();
 		}
+
+		// Remove the archetype if it has no entities
+		if (entities.empty()) {
+			archetypeEntities.erase(archetype);
+		}
+
 		entityArchetype.erase(entity);
 	}
 
 
+
 	void MoveEntityToArchetype(ID entity, const std::bitset<MAX_COMPONENTS>& newArchetype) {
+		std::bitset<MAX_COMPONENTS> oldArchetype;
+
 		if (auto&& oldArchetypeIt = entityArchetype.find(entity); oldArchetypeIt != entityArchetype.end()) {
-			const std::bitset<MAX_COMPONENTS> oldArchetype = oldArchetypeIt->second;
+			oldArchetype = oldArchetypeIt->second;
 			if (oldArchetype == newArchetype) return;
 
 			auto& oldArchetypeEntities = archetypeEntities[oldArchetype];
@@ -50,18 +59,16 @@ private:
 				std::iter_swap(it, oldArchetypeEntities.end() - 1);
 				oldArchetypeEntities.pop_back();
 			}
+
+			if (oldArchetypeEntities.empty()) {
+				archetypeEntities.erase(oldArchetype);
+			}
 		}
 
 		archetypeEntities[newArchetype].push_back(entity);
 		entityArchetype[entity] = newArchetype;
 	}
 
-	template<typename... ComponentTypes>
-	static std::bitset<MAX_COMPONENTS> GetArchetypeID() {
-		std::bitset<MAX_COMPONENTS> archetype;
-		(..., archetype.set(GetComponentTypeId<ComponentTypes>()));
-		return archetype;
-	}
 
 
 public:
@@ -111,6 +118,21 @@ public:
 
 	template<typename TComponent>
 	void RemoveComponent(ID entity) {
+		if (entityArchetype.find(entity) == entityArchetype.end()) {
+			// Entity does not exist
+			return;
+		}
+
+		std::bitset<MAX_COMPONENTS> currentArchetype = entityArchetype[entity];
+
+		// Unset the bit for the component being removed
+		const ID componentID = ComponentTypeRegistry::GetInstance().GetTypeId<TComponent>();
+		currentArchetype.set(componentID, false);
+
+		// Move the entity to the new archetype
+		MoveEntityToArchetype(entity, currentArchetype);
+
+		// Remove the component
 		componentRegistry.RemoveComponent<TComponent>(entity);
 	}
 
@@ -124,9 +146,18 @@ public:
 
 		// Get the current archetype for the entity
 		std::bitset<MAX_COMPONENTS> currentArchetype = entityArchetype[entity];
-
+		//if (typeid(TComponent) == typeid(OneComp)) {
+		//	std::cout << "Adding entity with ID: " << entity << std::endl;
+		//}
+		//if (typeid(TComponent) == typeid(TwoComp)) {
+		//	std::cout << "Adding entity with ID: " << entity << std::endl;
+		//}
+		//if (typeid(TComponent) == typeid(BoolComp)) {
+		//	std::cout << "Adding entity with ID: " << entity << std::endl;
+		//}
 		// Set the bit for the new component
-		const ID componentID = GetComponentTypeId<TComponent>();
+		const ID componentID = ComponentTypeRegistry::GetInstance().GetTypeId<TComponent>();
+			
 		currentArchetype.set(componentID, true);
 
 		// Move the entity to the new archetype

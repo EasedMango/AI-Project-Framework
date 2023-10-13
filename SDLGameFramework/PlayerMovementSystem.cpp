@@ -23,7 +23,7 @@ void PlayerMovementSystem::Update(const float& deltaTime, Registry& registry)
     auto que = registry.CreateQuery().Include<Player>().Find();
     static ID playerEntity = *registry.CreateQuery().Include<Player>().Find().begin();
 
-	auto& input = InputHandler::Instance();
+    auto& input = InputHandler::Instance();
     float x = 0.0f, y = 0.0f;
 
     if (input.KeyHeld(SDLK_w)) {
@@ -39,19 +39,43 @@ void PlayerMovementSystem::Update(const float& deltaTime, Registry& registry)
         x += 1.0f;
     }
 
-    // Normalize individual axes to prevent them from exceeding 1 in magnitude
     x = std::clamp(x, -1.0f, 1.0f);
     y = std::clamp(y, -1.0f, 1.0f);
 
-    // Assign the values to moveDir
     glm::vec2 moveDir = glm::vec2(x, y);
 
-    // If necessary, normalize moveDir if both x and y are non-zero
     if (x != 0.0f && y != 0.0f) {
         moveDir = glm::normalize(moveDir);
     }
-    registry.GetComponent<Body>(playerEntity).accel = glm::vec3(moveDir,0);
+
+    auto& body = registry.GetComponent<Body>(playerEntity);
+
+    // Calculate desired velocity based on direction and max speed
+    glm::vec3 desiredVel = glm::vec3(moveDir, 0) * body.maxSpeed;
+
+    // Calculate the acceleration needed to move the body to the desired velocity
+    glm::vec3 steering = desiredVel - body.vel;
+
+    // Optionally limit the acceleration
+    if (glm::length(steering) > body.maxAcceleration) {
+        steering = glm::normalize(steering) * body.maxAcceleration;
+    }
+    body.accel = steering;
+    // Apply acceleration to the body
+    float damping = 0.98f; // Closer to 1 means less damping
+   // float damping = 1.0f - (1.0f - dampingFactor) * deltaTime;
+    // Apply damping when no key is held
+    if (x == 0.0f ) {
+       
+        body.vel.x *= damping;
+    }
+
+    if ( y == 0.0f) {
+        body.vel.y *= damping;
+    }
+
 }
+
 
 void PlayerMovementSystem::OnDestroy(Registry& registry)
 {

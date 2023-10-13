@@ -7,22 +7,13 @@
 #include <ranges>
 #include <unordered_map>
 #include <vector>
-
+#include <iostream>
 
 #include "CommonECS.h"
 
 
-template<typename... ComponentTypes>
-std::bitset<MAX_COMPONENTS> GetArchetypeID() const
-{
-    std::bitset<MAX_COMPONENTS> archetype;
-    auto setAndPrint = [&]<typename T>(T componentType) {
-        const std::size_t id = GetComponentTypeId<T>();
-        archetype.set(id);
-    };
-    (..., setAndPrint(ComponentTypes{}));
-    return archetype;
-}
+
+
 class Query {
 private:
 	using FilterFunc = std::function<bool(const std::bitset<MAX_COMPONENTS>&)>;
@@ -30,6 +21,7 @@ private:
 	const std::unordered_map<std::bitset<MAX_COMPONENTS>, std::vector<ID>>& archetypeEntities;
 	std::vector<FilterFunc> filters;  // Accumulated conditions.
 	std::vector<ID> result;
+
 
 
 public:
@@ -40,48 +32,59 @@ public:
 	}
 
 
-    // Exact: Entities must have exactly these components
-    template <typename... ComponentTypes>
-    Query& Exact() {
-        std::bitset<MAX_COMPONENTS> conditions = GetArchetypeID<ComponentTypes...>();
-        filters.emplace_back([conditions](const std::bitset<MAX_COMPONENTS>& archetype) {
-            return archetype == conditions;
-            });
-        return *this;
-    }
+	// Exact: Entities must have exactly these components
+	template <typename... ComponentTypes>
+	Query& Exact() {
+		std::bitset<MAX_COMPONENTS> conditions = GetArchetypeID<ComponentTypes...>();
+		//std::cout << "Exact conditions: " << conditions << std::endl;  // print out the bitset
+		filters.emplace_back([conditions](const std::bitset<MAX_COMPONENTS>& archetype) {
+			return archetype == conditions;
+			});
+		return *this;
+	}
 
-    // Any: Entities must have at least one of these components
-    template <typename... ComponentTypes>
-    Query& Any() {
-        std::bitset<MAX_COMPONENTS> conditions = GetArchetypeID<ComponentTypes...>();
-        filters.emplace_back([conditions](const std::bitset<MAX_COMPONENTS>& archetype) {
-            return (archetype & conditions).any();
-            });
-        return *this;
-    }
+	// Any: Entities must have at least one of these components
+	template <typename... ComponentTypes>
+	Query& Any() {
+		std::bitset<MAX_COMPONENTS> conditions = GetArchetypeID<ComponentTypes...>();
+		//std::cout << "Any conditions: " << conditions << std::endl;  // print out the bitset
+		filters.emplace_back([conditions](const std::bitset<MAX_COMPONENTS>& archetype) {
+			return (archetype & conditions).any();
+			});
+		return *this;
+	}
 
-    // Include (or All): Entities must have all of these components (and possibly more)
-    template <typename... ComponentTypes>
-    Query& Include() {
-        std::bitset<MAX_COMPONENTS> conditions = GetArchetypeID<ComponentTypes...>();
-        filters.emplace_back([conditions](const std::bitset<MAX_COMPONENTS>& archetype) {
-            return (archetype & conditions) == conditions;
-            });
-        return *this;
-    }
 
-    std::vector<ID>& Find() {
-        result.clear();
-        for (const auto& [archetype, entities] : archetypeEntities)
-        {
-            if (std::ranges::all_of(filters, [&archetype](const FilterFunc& filter) {
-                return filter(archetype);
-                }))
-            {
-                result.reserve(result.size() + entities.size());
-                result.insert(result.end(), entities.begin(), entities.end());
-            }
-        }
-        return result;
-    }
+	// Include (or All): Entities must have all of these components (and possibly more)
+	template <typename... ComponentTypes>
+	Query& Include() {
+		std::bitset<MAX_COMPONENTS> conditions = GetArchetypeID<ComponentTypes...>();
+		//std::cout << "Include conditions: " << conditions << std::endl;  // print out the bitset
+		filters.emplace_back([conditions](const std::bitset<MAX_COMPONENTS>& archetype) {
+			return (archetype & conditions) == conditions;
+			});
+		return *this;
+	}
+
+	std::vector<ID>& Find() {
+		result.clear();
+		for (const auto& [archetype, entities] : archetypeEntities)
+		{
+		//	std::cout << "Examining archetype: " << archetype << std::endl;
+			if (std::ranges::all_of(filters, [&archetype](const FilterFunc& filter) {
+				return filter(archetype);
+				}))
+			{
+			//	std::cout << "Match found. Adding entities: " << entities.size() << std::endl;
+				result.reserve(result.size() + entities.size());
+				result.insert(result.end(), entities.begin(), entities.end());
+			}
+			else
+			{
+				//std::cout << "No match found for this archetype." << std::endl;
+			}
+		}
+		return result;
+	}
+
 };

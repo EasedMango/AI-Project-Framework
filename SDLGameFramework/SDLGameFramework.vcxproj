@@ -56,6 +56,7 @@
     <ClInclude Include="SDLTypes.h" />
     <ClInclude Include="AIBehaviors.h" />
     <ClInclude Include="SteeringOutput.h" />
+    <ClInclude Include="SteeringSystem.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Timing.h" />
@@ -92,6 +93,7 @@
     <ClCompile Include="PlayerMovementSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SDLTypes.cpp" />
+    <ClCompile Include="SteeringSystem.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />

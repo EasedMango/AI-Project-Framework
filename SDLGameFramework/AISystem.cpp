@@ -9,12 +9,8 @@ void AISystem::OnCreate(Registry& registry)
 
 void AISystem::Update(const float& deltaTime, Registry& registry)
 {
-	ID target;
-	auto targets= registry.CreateQuery().Any<Player>();
-	for(auto& entity: targets.Find())
-	{
-		target= entity;
-	}
+	static auto target = registry.CreateQuery().Any<Player>().Find()[0];
+
 	for (auto que = registry.CreateQuery().Any<AI>(); const auto & entity : que.Find()) {
 		{
 
@@ -25,10 +21,10 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 			switch (ai.currentBehavior)
 			{
 			case AIBehaviors::BehaviorType::Seek:
-				AIBehaviors::Seek(body, transform, targetTransform, ai.seek);
+				ai.steering += AIBehaviors::Seek(body, transform, targetTransform, registry.GetComponent<SeekInfo>(entity));
 				break;
 			case AIBehaviors::BehaviorType::Arrive:
-				AIBehaviors::Arrive(body, transform, targetTransform, ai.arrive);
+				ai.steering += AIBehaviors::Arrive(body, transform, targetTransform, registry.GetComponent<ArriveInfo>(entity));
 				break;
 			default:
 				break;

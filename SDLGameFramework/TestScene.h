@@ -5,7 +5,7 @@ class TestScene :
     public Scene
 {
 private:
-
+    bool gui=true;
 public:
     TestScene(const ScopePtr<Renderer>& renderer) : Scene(*renderer) {}
     bool OnCreate(ECS& ecs) override;

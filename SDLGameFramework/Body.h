@@ -11,7 +11,7 @@ struct Body
     float rotation;			// rotating at this speed (radians per second?)
     float angular;          // angular acceleration
     float maxSpeed=10;
-    float maxAcceleration=10;
+    float maxAcceleration=100;
     float maxRotation;
     float maxAngular;
     float radius=1;           // for getting near walls

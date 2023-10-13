@@ -68,6 +68,7 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 		});
 	InputHandler::Instance().RegisterKeyPressCallback(SDLK_p, [&](const SDL_Event&) {
 		pause = !pause;
+		std::cout << "Pause: " << std::boolalpha << pause << std::endl;
 		});
 	return true;
 }

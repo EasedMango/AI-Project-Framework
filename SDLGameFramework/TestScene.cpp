@@ -10,43 +10,45 @@
 #include "Timing.h"
 #include "Transform.h"
 #include "BodySystem.h"
+#include "SteeringSystem.h"
+
 
 bool TestScene::OnCreate(ECS& ecs)
 {
 
 
 	auto& registry = ecs.GetRegistry();
-	/*auto headStickAI = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStickAI);
-	registry.AddComponent<Body>(headStickAI);
-	registry.AddComponent<Sprite>(headStickAI, renderer.CreateSprite("Head_With_A_Stick.png"));
-	registry.AddComponent<AI>(headStickAI, AIBehaviors::BehaviorType::Arrive,-1, SeekInfo(10), ArriveInfo(10, 10, 5, 2, 4));*/
+
+
 	auto headStick = registry.CreateEntity();
 	registry.AddComponent<Transform>(headStick);
 	registry.AddComponent<Body>(headStick);
 	registry.AddComponent<Sprite>(headStick, renderer.CreateSprite("Head_With_A_Stick.png"));
 	registry.AddComponent<Player>(headStick);
 
-	auto headStick2 = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStick2);
-	registry.AddComponent<Sprite>(headStick2, renderer.CreateSprite("Head_With_A_Stick.png"));
 
-	auto headStickAI = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStickAI);
-	registry.AddComponent<Body>(headStickAI);
-	registry.AddComponent<Sprite>(headStickAI, renderer.CreateSprite("Head_With_A_Stick.png"));
-	registry.AddComponent<AI>(headStickAI, AIBehaviors::BehaviorType::Arrive, headStick, SeekInfo(10), ArriveInfo(10, 10, 5, 2, 4));
+	const auto headStickSeekAI = registry.CreateEntity();
+	registry.AddComponent<Transform>(headStickSeekAI);
+	registry.AddComponent<Body>(headStickSeekAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	registry.AddComponent<Sprite>(headStickSeekAI, renderer.CreateSprite("Head_With_A_Stick.png"));
+	registry.AddComponent<AI>(headStickSeekAI, AIBehaviors::BehaviorType::Seek, headStick, SteeringOutput());
+	registry.AddComponent<SeekInfo>(headStickSeekAI, 1);
 
+	const auto headStickArriveAI = registry.CreateEntity();
+	registry.AddComponent<Transform>(headStickArriveAI);
+	registry.AddComponent<Body>(headStickArriveAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	registry.AddComponent<Sprite>(headStickArriveAI, renderer.CreateSprite("Head_With_A_Stick.png"));
+	registry.AddComponent<AI>(headStickArriveAI, AIBehaviors::BehaviorType::Arrive, headStick, SteeringOutput());
+	registry.AddComponent<ArriveInfo>(headStickArriveAI );
 
 	//Create circle of heads
 
 
 
-
-	ecs.GetSystemManager().AddSystem<PlayerMovementSystem>();
 	ecs.GetSystemManager().AddSystem<AISystem>();
+	ecs.GetSystemManager().AddSystem<SteeringSystem>();
+	ecs.GetSystemManager().AddSystem<PlayerMovementSystem>();
 	ecs.GetSystemManager().AddSystem<BodySystem>();
-	
 	ecs.OnCreate();
 	return true;
 }
@@ -81,24 +83,62 @@ void TestScene::Render(Registry& registry) const
 			[](const auto& a, const auto& b) {
 				return std::get<0>(a) < std::get<0>(b);  // Sort in ascending order of z-value
 			});
-		ImGui::Begin("Test");
-		// Now render the entities in the sorted order
-		for (const auto& item : zOrderedEntities) {
-			const auto& entity = std::get<1>(item);
-			auto& transform = registry.GetComponent<Transform>(entity);
-			ImGui::Text("ID: %i Pos: x%f, y%f, z%f",entity,transform.pos.x, transform.pos.y, transform.pos.z);
-			auto& sprite = registry.GetComponent<Sprite>(entity);
-			renderer.RenderSprite(sprite, transform.pos, transform.rot);
-		}
-		for(auto que = registry.CreateQuery().Include<Player,Transform>(); const auto & entity : que.Find())
 		{
-			auto& transform = registry.GetComponent<Transform>(entity);
-			ImGui::Text("Player Pos: x%f, y%f, z%f", transform.pos.x, transform.pos.y, transform.pos.z);
+			ImGui::Begin("Test");
+			// Now render the entities in the sorted order
+			for (const auto& item : zOrderedEntities) {
+				const auto& entity = std::get<1>(item);
+				auto& transform = registry.GetComponent<Transform>(entity);
+				ImGui::Text("ID: %i Pos: x%f, y%f, z%f", entity, transform.pos.x, transform.pos.y, transform.pos.z);
+				auto& sprite = registry.GetComponent<Sprite>(entity);
+				renderer.RenderSprite(sprite, transform.pos, transform.rot);
+			}
+			if (ImGui::TreeNode("Bodies")) {
+				for (auto que = registry.CreateQuery().Include<Transform, Body>(); const auto & entity : que.Find())
+				{
+
+					std::string s = ("Entity: "); s.append(std::to_string(entity));
+					if (ImGui::TreeNode(s.c_str()))
+					{
+						auto& transform = registry.GetComponent<Transform>(entity);
+						ImGui::Text("Transform:\n Pos: x%f, y%f, z%f\n Rot: %f", transform.pos.x, transform.pos.y, transform.pos.z, transform.rot);
+
+						auto& body = registry.GetComponent<Body>(entity);
+						ImGui::Text("\nBody:\n"
+							" Vel     : x%f, y%f, z%f\n"
+							" Accel   : x%f, y%f, z%f\n"
+							" RotVel  : %f\n"
+							" RotAccel: %f",
+							body.vel.x, body.vel.y, body.vel.z,
+							body.accel.x, body.accel.y, body.accel.z,
+							body.rotation,
+							body.angular);
+						if (ImGui::TreeNode("  Other Values"))
+						{
+							ImGui::Text("Max Speed: %f\n"
+								"  Max Acceleration: %f\n"
+								"  Max Rotation: %f\n"
+								"  Max Angular: %f\n"
+								"  Orientation: %f\n"
+								"  Mass: %f\n"
+								"  Radius: %f",
+								body.maxSpeed,
+								body.maxAcceleration,
+								body.maxRotation,
+								body.maxAngular,
+								body.orientation,
+								body.mass,
+								body.radius);
+							ImGui::TreePop();
+						}
+						ImGui::TreePop();
+					}
+				}
+				ImGui::TreePop();
+			}
 		}
 
 
-
-		ImGui::Text("Hello, world!");
 		ImGui::End();
 	}
 	renderer.EndFrame();
