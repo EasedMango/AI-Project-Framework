@@ -7,6 +7,7 @@ class Timer;
 class EventHandler;
 #include "Scene.h"
 #include "TestScene.h"
+#include "GUI.h"
 class Core
 {
 private:
@@ -14,6 +15,9 @@ private:
 	Ref<Timer> timer;
 	Ref<EventHandler> eventHandler;
 	Ref<Scene> currentScene;
+	ScopePtr<Renderer> renderer;
+	ScopePtr<ECS> ecs;
+
 
 	unsigned int fps;
 	bool isRunning;
@@ -24,7 +28,7 @@ public:
 	template<typename T>
 	void BuildNewScene()
 	{
-		currentScene = std::make_unique<T>();
+		currentScene = std::make_unique<T>(renderer);
 	}
 
 
@@ -37,8 +41,3 @@ public:
 	bool Run();
 };
 
-template <typename T>
-void Core::SetInitalScene()
-{
-	BuildNewScene<T>();
-}

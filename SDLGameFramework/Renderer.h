@@ -5,13 +5,13 @@
 #include "Common.h"
 #include "glm/fwd.hpp"
 #include <unordered_map>
-
-
+#include "SDLTypes.h"
+#include "GUI.h"
 class Window;
 
 struct Texture
 {
-	SDL_Texture* texture;
+	SDLTexturePtr texture;
 	int width, height;
 };
 
@@ -19,46 +19,63 @@ struct Sprite
 {
 	ID textureID;
 	int scale;
+	glm::vec4 colour = { 255,255,255,255 };
 };
+
+
 
 class Renderer
 {
 private:
-	SDL_Renderer* renderer;
+
+	SDLRendererPtr renderer;
 	Ref<Window> window;
 	Ref<Camera> camera;
+	ScopePtr<GUI> imGui;
 	std::unordered_map<std::string, ID> textureMap;
-	std::vector<std::unique_ptr<Texture>> textures;
+	std::vector<ScopePtr<Texture>> textures;
 
-	
-
+	Renderer(const Ref<Window >& window);
 protected:
 	friend class Core;
-	Renderer(): renderer(nullptr)
-	{
+	
+	static ScopePtr<Renderer> Create(const Ref<Window>& window) {
+		return ScopePtr<Renderer>(new Renderer(window));
 	}
-	;
-	void Init(const Ref<Window >& window);
+	friend class GUI;
+	Ref<Window>& GetWindow()  { return window; }
+	SDLRendererPtr& GetRenderer()  { return renderer; }
 public:
-
+	GUI& GetGUI() { return *imGui; }
 	//delete copy constructor and assignment operator
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 	void GiveCamera(const Ref<Camera>& camera_);
-	static Renderer& GetInstance()
+
+
+
+	//Creates a new camera but does not set it as the current camera
+	[[nodiscard]] Ref<Camera> CreateCamera()
 	{
-		static auto* instance = new Renderer();
-		return *instance;
+		return Camera::Create(window);
 	}
-	Ref<Camera>& GetCamera() { return camera; }
+
+	Ref<Camera>& GetCurrentCamera() { return camera; }
 
 	void BeginFrame() const;
 
 	void EndFrame() const;
 
-	Sprite CreateSprite(const std::string& filename, int scale = 1);
+	Sprite CreateSprite(const std::string& filename, int scale = 1,glm::vec4 colour={255,255,255,255});
 
-	 void RenderSprite(Sprite sprite, const glm::vec3& position, const  float& angle) const;
+
+	/*
+	 Render a sprite at a given position and angle
+	 z value of position is used to determine render order (higher z values are rendered last)
+	 */
+	void RenderSprite(Sprite sprite, const glm::vec3& position, const  float& angle) const;
+
+	void RenderColoredRect(const glm::vec3& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color) const;
 
 
 };

@@ -5,11 +5,12 @@ class TestScene :
     public Scene
 {
 private:
-
+    bool gui=true;
 public:
-    bool OnCreate(ECS& ecs, Ref<Window>& window) override;
+    TestScene(const ScopePtr<Renderer>& renderer) : Scene(*renderer) {}
+    bool OnCreate(ECS& ecs) override;
     void OnDestroy(ECS& ecs) override;
-    void Update(const float deltaTime, ECS& ecs) override;
-    void Render(ECS& ecs) const override;
+    void Update(const float& deltaTime, ECS& ecs) override;
+    void Render( Registry& registry) const override;
 };
 
