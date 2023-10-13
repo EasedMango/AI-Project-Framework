@@ -71,9 +71,7 @@ public:
 	//*************************QUERIES*************************//
 
 	Query CreateQuery() {
-
 		return (archetypeEntities);
-		/*return Query<ComponentTypes...>(archetypeEntities[GetArchetypeID<ComponentTypes...>()]);*/
 	}
 
 	//*************************SYSTEMS*************************//

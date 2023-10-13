@@ -4,6 +4,7 @@
 template<typename T>
 class SparseSet {
 private:
+    //sparse is sized to the largest entity that has been added to the set
     std::vector<unsigned> sparse;
     std::vector<T> dense;
     unsigned size = 0;

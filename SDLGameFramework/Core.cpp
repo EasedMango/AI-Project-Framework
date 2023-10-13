@@ -7,9 +7,11 @@
 #include <memory>
 #include "EventHandler.h"
 #include "InputHandler.h"
+#include "MemoryManager.h"
 #include "Renderer.h"
 #include "Scene.h"
 #include "Timer.h"
+#include "Timing.h"
 #include "ECS/ECS.h"
 Core::Core()
 {
@@ -42,7 +44,9 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 	}
 
 	// Create Renderer
-	Renderer::GetInstance().Init(window);
+	renderer = Renderer::Create(window);
+
+
 
 	// Create Event Handler
 	eventHandler = std::make_shared<EventHandler>();
@@ -52,7 +56,7 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 	InputHandler::Instance().Start();
 	timer = std::make_shared<Timer>();
 
-
+	ecs = ECS::Create();
 
 	eventHandler->RegisterCallback(SDL_QUIT, [&](const SDL_Event&)
 		{
@@ -74,20 +78,23 @@ bool Core::Run()
 {
 	isRunning = true;
 	pause = false;
-	fps = 60;
-	auto& ecs = ECS::GetInstance();
-	currentScene->OnCreate(ecs, window);
+	fps = 144;
+
+	currentScene->OnCreate(*ecs);
 	timer->Start();
 	while (isRunning) {
+	//	TIMING("Run");
 		timer->UpdateFrameTicks();
 		eventHandler->HandleEvents();
 		InputHandler::Instance().KeyHoldChecker();
 		if (!pause)
-			currentScene->Update(timer->GetDeltaTime(), ecs);
-		currentScene->Render(ecs);
+			currentScene->Update(timer->GetDeltaTime(), *ecs);
+		
+		currentScene->Render(ecs->GetRegistry());
 		SDL_GL_SwapWindow(window->GetWindow());
 		SDL_Delay(timer->GetSleepTime(fps));
+		//MemoryManager::CountAllocations();
 	}
-	currentScene->OnDestroy(ecs);
+	currentScene->OnDestroy(*ecs);
 	return false;
 }

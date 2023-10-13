@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "ECS/ISystem.h"
 
-class MovementSystem: public ISystem
+class BodySystem : public ISystem
 {
 public:
 	void OnCreate(Registry& registry) override;

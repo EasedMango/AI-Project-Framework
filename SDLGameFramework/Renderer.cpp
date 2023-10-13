@@ -2,13 +2,15 @@
 
 #include <SDL_image.h>
 
+#include "GUI.h"
 #include "Window.h"
 #include "glm/vec3.hpp"
 
-void Renderer::Init(const Ref<Window >&window)
+
+Renderer::Renderer(const Ref<Window>& window) : window(window)
 {
-	this->window = window;
-	renderer = SDL_CreateRenderer(window->GetWindow(), -1, SDL_RENDERER_ACCELERATED);
+	renderer =  SDLRendererPtr( SDL_CreateRenderer(window->GetWindow(), -1, SDL_RENDERER_ACCELERATED));
+	imGui = std::make_unique<GUI>(*this);
 }
 
 void Renderer::GiveCamera(const Ref<Camera>& camera_)
@@ -18,15 +20,19 @@ void Renderer::GiveCamera(const Ref<Camera>& camera_)
 
 void Renderer::BeginFrame() const
 {
-	SDL_RenderClear(renderer);
+	SDL_RenderClear(renderer.get());
+	
+	imGui->BeginFrame(window->GetWindow());
+
 }
 
 void Renderer::EndFrame() const
 {
-	SDL_RenderPresent(renderer);
+	imGui->EndFrame(renderer);
+	SDL_RenderPresent(renderer.get());
 }
 
-Sprite Renderer::CreateSprite(const std::string& filename, int scale)
+Sprite Renderer::CreateSprite(const std::string& filename, int scale,glm::vec4 colour)
 {
 	auto it = textureMap.find(filename);
 	ID textureID;
@@ -41,7 +47,7 @@ Sprite Renderer::CreateSprite(const std::string& filename, int scale)
 
 		std::string path = "Sprites/" + filename;
 		// Load texture and store it.
-		SDL_Texture* sdlTexture = IMG_LoadTexture(renderer, path.c_str());
+		SDLTexturePtr sdlTexture = SDLTexturePtr (IMG_LoadTexture(renderer.get(), path.c_str()));
 		if(sdlTexture == nullptr)
 		{
 			SDL_Log("Failed to load texture: %s - %s", filename.c_str(), IMG_GetError());
@@ -49,17 +55,17 @@ Sprite Renderer::CreateSprite(const std::string& filename, int scale)
 			return Sprite{ 0, 0 };
 		}
 		int width, height;
-		SDL_QueryTexture(sdlTexture, nullptr, nullptr, &width, &height);
+		SDL_QueryTexture(sdlTexture.get(), nullptr, nullptr, &width, &height);
 
 		textureID = textures.size();
-		textures.emplace_back(new Texture{ sdlTexture, width, height });
+		textures.emplace_back(std::make_unique<Texture>(Texture{std::move(sdlTexture), width, height}));
 		textureMap[filename] = textureID;
 	}
 
-	return Sprite{ textureID, scale };
+	return Sprite{ textureID, scale,colour };
 }
 
-void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const float& angle) const
+void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const float& angle ) const
 {
 	auto& texture = textures[sprite.textureID];
 	// convert the position from game coords to screen coords
@@ -77,9 +83,34 @@ void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const floa
 	square.w = static_cast<int>(w);
 	square.h = static_cast<int>(h);
 
+	// Apply hue shift
+	SDL_SetTextureColorMod(texture->texture.get(), sprite.colour.r, sprite.colour.g, sprite.colour.b);
+
 	// Convert character orientation from radians to degrees.
-	SDL_RenderCopyEx(renderer, texture->texture, nullptr, &square,
+	SDL_RenderCopyEx(renderer.get(), texture->texture.get(), nullptr, &square,
 		angle, nullptr, SDL_FLIP_NONE);
 	
 
+}
+void Renderer::RenderColoredRect(const glm::vec3& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color=glm::vec4(255,255,255, 255)) const
+{
+	SDL_Rect rect;
+	glm::vec3 screenCoords;
+	float w, h;
+
+	// Convert the position from game coords to screen coords
+	screenCoords = camera->GetProjectionMatrix() * glm::vec4(position, 1.f);
+	w = dimensions.x;
+	h = dimensions.y;
+
+	rect.x = static_cast<int>(screenCoords.x - 0.5f * w);
+	rect.y = static_cast<int>(screenCoords.y - 0.5f * h);
+	rect.w = static_cast<int>(w);
+	rect.h = static_cast<int>(h);
+
+	SDL_SetRenderDrawColor(renderer.get(), color.r, color.g, color.b, color.a);
+
+	// If you'd like to consider angle rotation, you may need to use advanced techniques
+	// like transforming the points manually, as SDL_RenderFillRect doesn't support rotation.
+	SDL_RenderFillRect(renderer.get(), &rect);
 }

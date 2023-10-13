@@ -1,9 +1,11 @@
 ﻿#include "PlayerMovementSystem.h"
 
 #include <glm/geometric.hpp>
+#include <glm/vec2.hpp>
 
+
+#include "Body.h"
 #include "InputHandler.h"
-#include "Movement.h"
 #include "Player.h"
 #include "Transform.h"
 #include "ECS/Registry.h"
@@ -18,6 +20,7 @@ void PlayerMovementSystem::OnCreate(Registry& registry)
 
 void PlayerMovementSystem::Update(const float& deltaTime, Registry& registry)
 {
+    auto que = registry.CreateQuery().Include<Player>().Find();
     static ID playerEntity = *registry.CreateQuery().Include<Player>().Find().begin();
 
 	auto& input = InputHandler::Instance();
@@ -41,13 +44,13 @@ void PlayerMovementSystem::Update(const float& deltaTime, Registry& registry)
     y = std::clamp(y, -1.0f, 1.0f);
 
     // Assign the values to moveDir
-    moveDir = glm::vec2(x, y);
+    glm::vec2 moveDir = glm::vec2(x, y);
 
     // If necessary, normalize moveDir if both x and y are non-zero
     if (x != 0.0f && y != 0.0f) {
         moveDir = glm::normalize(moveDir);
     }
-    registry.GetComponent<Movement>(playerEntity).dir = moveDir;
+    registry.GetComponent<Body>(playerEntity).accel = glm::vec3(moveDir,0);
 }
 
 void PlayerMovementSystem::OnDestroy(Registry& registry)
