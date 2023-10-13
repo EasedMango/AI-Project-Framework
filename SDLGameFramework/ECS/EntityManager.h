@@ -16,7 +16,7 @@ private:
 
 public:
 	EntityManager();
-	~EntityManager();
+	
 
 	static ID CreateEntity();
 

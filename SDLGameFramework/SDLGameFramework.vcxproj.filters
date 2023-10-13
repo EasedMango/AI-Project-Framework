@@ -23,6 +23,15 @@
     <Filter Include="Framework\Systems">
       <UniqueIdentifier>{897f86fb-7b51-4db5-9ea0-47cb8c168559}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utility\Memory">
+      <UniqueIdentifier>{918ee5d2-9f72-4efe-94fa-3aa366b1d3fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{eae425db-76ec-4fc5-b83d-c7cfd4fb12dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\AI">
+      <UniqueIdentifier>{e405209b-d77c-4600-ab7c-9caff1d8a3aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -91,14 +100,68 @@
     <ClInclude Include="PlayerMovementSystem.h">
       <Filter>Framework\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Movement.h">
-      <Filter>Framework\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="MovementSystem.h">
-      <Filter>Framework\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Framework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Timing.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryManager.h">
+      <Filter>Utility\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryTracker.h">
+      <Filter>Utility\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLTypes.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imgui_impl_sdl2.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imgui_impl_sdlrenderer2.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libs\ImGui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Body.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="BodySystem.h">
+      <Filter>Framework\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringOutput.h">
+      <Filter>Framework\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AIBehaviors.h">
+      <Filter>Framework\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AISystem.h">
+      <Filter>Framework\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringSystem.h">
+      <Filter>Framework\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -156,7 +219,49 @@
     <ClCompile Include="PlayerMovementSystem.cpp">
       <Filter>Framework\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="MovementSystem.cpp">
+    <ClCompile Include="MemoryManager.cpp">
+      <Filter>Utility\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryTracker.cpp">
+      <Filter>Utility\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLTypes.cpp">
+      <Filter>SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui_impl_sdl2.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui_impl_sdlrenderer2.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\ImGui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="BodySystem.cpp">
+      <Filter>Framework\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="AISystem.cpp">
+      <Filter>Framework\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="AIBehaviors.cpp">
+      <Filter>Framework\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="SteeringSystem.cpp">
       <Filter>Framework\Systems</Filter>
     </ClCompile>
   </ItemGroup>

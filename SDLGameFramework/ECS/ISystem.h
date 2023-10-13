@@ -1,5 +1,5 @@
 ﻿#pragma once
-class Registry;
+#include "Registry.h";
 class ISystem {
 public:
 	virtual ~ISystem() = default;

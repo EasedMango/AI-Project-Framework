@@ -19,6 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\libs\ImGui\imconfig.h" />
+    <ClInclude Include="..\libs\ImGui\imgui.h" />
+    <ClInclude Include="..\libs\ImGui\imgui_impl_sdl2.h" />
+    <ClInclude Include="..\libs\ImGui\imgui_impl_sdlrenderer2.h" />
+    <ClInclude Include="..\libs\ImGui\imgui_internal.h" />
+    <ClInclude Include="..\libs\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="..\libs\ImGui\imstb_textedit.h" />
+    <ClInclude Include="..\libs\ImGui\imstb_truetype.h" />
+    <ClInclude Include="AI.h" />
+    <ClInclude Include="AISystem.h" />
+    <ClInclude Include="Body.h" />
+    <ClInclude Include="BodySystem.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Common.h" />
@@ -33,19 +45,35 @@
     <ClInclude Include="ECS\SparseSet.h" />
     <ClInclude Include="ECS\SystemManager.h" />
     <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="Movement.h" />
-    <ClInclude Include="MovementSystem.h" />
+    <ClInclude Include="MemoryManager.h" />
+    <ClInclude Include="MemoryTracker.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerMovementSystem.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SDLTypes.h" />
+    <ClInclude Include="AIBehaviors.h" />
+    <ClInclude Include="SteeringOutput.h" />
+    <ClInclude Include="SteeringSystem.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Timing.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\libs\ImGui\imgui.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_impl_sdlrenderer2.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="..\libs\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="AIBehaviors.cpp" />
+    <ClCompile Include="AISystem.cpp" />
+    <ClCompile Include="BodySystem.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -57,11 +85,15 @@
     <ClCompile Include="ECS\SparseSet.cpp" />
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MovementSystem.cpp" />
+    <ClCompile Include="MemoryManager.cpp" />
+    <ClCompile Include="MemoryTracker.cpp" />
     <ClCompile Include="PlayerMovementSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SDLTypes.cpp" />
+    <ClCompile Include="SteeringSystem.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -119,7 +151,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)libs\OpenGL\include;$(SolutionDir)libs\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\OpenGL\include;$(SolutionDir)libs\SDL\include;$(SolutionDir)libs\ImGui;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -172,11 +204,12 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libs\OpenGL\lib\x64;$(SolutionDir)libs\SDL\lib\x64;$(IncludePath);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\OpenGL\lib\x64;$(SolutionDir)libs\SDL\lib\x64;$(IncludePath)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2main.lib;glew32.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

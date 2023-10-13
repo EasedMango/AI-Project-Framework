@@ -20,7 +20,11 @@ private:
 	Registry registry;
 	SystemManager systemManager;
 
-
+	protected:
+		friend class Core;
+		static std::unique_ptr<ECS> Create() {
+			return std::unique_ptr<ECS>(new ECS());
+		}
 
 public:
 	//delete copy and move constructors and assign operators
@@ -29,10 +33,7 @@ public:
 	ECS& operator=(const ECS&) = delete;
 	ECS& operator=(ECS&&) = delete;
 
-	static ECS& GetInstance() {
-		static auto* instance = new ECS();
-		return *instance;
-	}
+
 
 	Registry& GetRegistry() {
 		return registry;

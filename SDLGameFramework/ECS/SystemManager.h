@@ -3,11 +3,11 @@
 
 #include "ISystem.h"
 #include "Registry.h"
-
+#include "../Common.h"
 class SystemManager
 {
 private:
-	std::vector<std::unique_ptr<ISystem>> systems;
+	std::vector<ScopePtr<ISystem>> systems;
 
 public:
 

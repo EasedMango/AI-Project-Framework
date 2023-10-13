@@ -363,8 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Keep libs
-!libs/*
-!libs/SDL/lib/x64/*
-!libs/SDL/dll/x64/*
-!libs/OpenGL/lib/x64/*
-!libs/OpenGL/dll/x64/*
+!libs/

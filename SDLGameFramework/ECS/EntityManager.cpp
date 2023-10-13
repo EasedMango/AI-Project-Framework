@@ -4,11 +4,9 @@
 
 
 EntityManager::EntityManager()
-{
-}
-
-EntityManager::~EntityManager()
 = default;
+
+
 
 ID EntityManager::CreateEntity() {
 	static unsigned id = 0;

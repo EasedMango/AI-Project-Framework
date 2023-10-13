@@ -2,12 +2,14 @@
 #include <SDL_video.h>
 #include <string>
 
+#include "SDLTypes.h"
+
 class Window
 {
 private:
     int width, height;
-    SDL_Window* window;
-    SDL_Surface* screenSurface;
+    SDLWindowPtr window;
+    SDLSurfacePtr screenSurface;
 
 public:
     Window(const Window&) = delete;
@@ -22,7 +24,7 @@ public:
 
     int GetWidth() const { return width; }
     int GetHeight() const { return height; }
-    SDL_Window* GetWindow() const { return window; }
+    SDL_Window* GetWindow() const { return window.get(); }
 
 };
 

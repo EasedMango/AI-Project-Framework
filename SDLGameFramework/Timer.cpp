@@ -2,6 +2,8 @@
 #include <iostream>
 #include "Timer.h"
 
+#include <SDL_timer.h>
+
 Timer::Timer() : prevTicks(0), currentTicks(0) {}
 
 Timer::~Timer() {}
