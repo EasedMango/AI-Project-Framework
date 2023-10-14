@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <glm/vec3.hpp>
+
 #include "AIBehaviors.h"
 #include "Common.h"
 

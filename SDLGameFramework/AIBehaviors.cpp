@@ -39,6 +39,9 @@ SteeringOutput AIBehaviors::Seek(const Body& characterBody, const Transform& cha
 }
 SteeringOutput AIBehaviors::Arrive(const Body& characterBody, const Transform& characterTrans, const Transform& target, ArriveInfo& info)
 {
+
+
+
 	return SteeringOutput();
 }
 
@@ -49,39 +52,39 @@ SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& c
 
 	glm::vec3 direction = target.pos - characterTrans.pos;
 	float distance = glm::length(direction);
-	
-	
+
+
 	SeekInfo si = SeekInfo(1.0f);
-	
+
 	if (distance < 2) {
 
-		return Seek(characterBody,characterTrans,target,si);
+		return Seek(characterBody, characterTrans, target, si);
 	}
 
 
 	//sets patrol point
-	info.patrolPointA = glm::vec3(5.0f, 5.0f, 0.0f);
-	info.patrolPointB = glm::vec3(-5.0f, -5.0f, 0.0f);
+	info.patrolPointA = glm::vec3(-6.0f, 4.0f, 0.0f);
+	info.patrolPointB = glm::vec3(6.0f, 4.0f, 0.0f);
 
 	//sets the starting posistion to be one of the points
 	glm::vec3 currentPosition;
 
 	if (info.AtpointA == true) {
-		steering.linear = characterTrans.pos - info.patrolPointB;
+		steering.linear = info.patrolPointB - characterTrans.pos;
 		currentPosition = info.patrolPointB;
 	}
 
 	if (info.AtpointA == false) {
-		steering.linear = characterTrans.pos - info.patrolPointA;
+		steering.linear = info.patrolPointA - characterTrans.pos;
 		currentPosition = info.patrolPointA;
 	}
-	
-	 direction = currentPosition - characterTrans.pos;
-	 distance = glm::length(direction);
-	
-	 if (distance <= 1.0f) {
-		 info.AtpointA = !info.AtpointA;
-	 }
+
+	direction = currentPosition - characterTrans.pos;
+	distance = glm::length(direction);
+
+	if (distance <= 1.0f) {
+		info.AtpointA = !info.AtpointA;
+	}
 
 	return steering;
 }

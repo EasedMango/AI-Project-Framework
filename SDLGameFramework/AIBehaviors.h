@@ -7,6 +7,7 @@
 #include "Transform.h"
 
 
+struct PatrolInfo;
 struct ArriveInfo;
 struct SeekInfo;
 
