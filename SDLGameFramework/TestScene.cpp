@@ -38,8 +38,8 @@ bool TestScene::OnCreate(ECS& ecs)
 	registry.AddComponent<Transform>(headStickArriveAI);
 	registry.AddComponent<Body>(headStickArriveAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
 	registry.AddComponent<Sprite>(headStickArriveAI, renderer.CreateSprite("Head_With_A_Stick.png"));
-	registry.AddComponent<AI>(headStickArriveAI, AIBehaviors::BehaviorType::Arrive, headStick, SteeringOutput());
-	registry.AddComponent<ArriveInfo>(headStickArriveAI );
+	registry.AddComponent<AI>(headStickArriveAI, AIBehaviors::BehaviorType::Flee, headStick, SteeringOutput());
+	registry.AddComponent<FleeInfo>(headStickArriveAI );
 
 	//Create circle of heads
 

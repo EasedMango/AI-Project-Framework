@@ -9,13 +9,15 @@
 
 struct ArriveInfo;
 struct SeekInfo;
+struct FleeInfo;
 
 namespace AIBehaviors {
 
 	enum class BehaviorType
 	{
 		Seek,
-		Arrive
+		Arrive,
+		Flee
 	};
 
 
@@ -23,5 +25,7 @@ namespace AIBehaviors {
 
 
 	SteeringOutput Arrive(const Body& characterBody, const Transform& characterTrans, const Transform& target, ArriveInfo& info);
+
+	SteeringOutput Flee(Body& characterBody, const Transform& characterTrans, const Transform& target, FleeInfo& info);
 
 }

@@ -41,3 +41,18 @@ SteeringOutput AIBehaviors::Arrive(const Body& characterBody, const Transform& c
 {
 	return SteeringOutput();
 }
+SteeringOutput AIBehaviors::Flee(Body& characterBody, const Transform& characterTrans, const Transform& target, FleeInfo& info) 
+{
+	SteeringOutput steering;
+	steering.angular = 0;
+
+	glm::vec3 direction = target.pos - characterTrans.pos;
+	float distance = glm::length(direction);
+
+	if (distance > 0) {
+		steering.linear = characterTrans.pos - target.pos;
+
+		steering.linear = glm::normalize(steering.linear) * characterBody.maxAcceleration;
+	}
+	return steering;
+}
