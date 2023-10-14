@@ -41,8 +41,20 @@ bool TestScene::OnCreate(ECS& ecs)
 	registry.AddComponent<AI>(headStickArriveAI, AIBehaviors::BehaviorType::Flee, headStick, SteeringOutput());
 	registry.AddComponent<FleeInfo>(headStickArriveAI );
 
-	//Create circle of heads
+	const auto CareAI = registry.CreateEntity();
+	registry.AddComponent<Transform>(CareAI);
+	registry.AddComponent<Body>(CareAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 5, 50, 3, 3, 1);
+	registry.AddComponent<Sprite>(CareAI, renderer.CreateSprite("Care.png"));
+	registry.AddComponent<AI>(CareAI, AIBehaviors::BehaviorType::Chase, headStick, SteeringOutput());
+	registry.AddComponent<ChaseInfo>(CareAI);
 
+	//Create circle of heads
+	const auto headStickPatrolAI = registry.CreateEntity();
+	registry.AddComponent<Transform>(headStickPatrolAI, glm::vec3(-6, 4, 0), 0);
+	registry.AddComponent<Body>(headStickPatrolAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	registry.AddComponent<Sprite>(headStickPatrolAI, renderer.CreateSprite("Head_With_A_Stick.png"));
+	registry.AddComponent<AI>(headStickPatrolAI, AIBehaviors::BehaviorType::Patrol, headStick, SteeringOutput());
+	registry.AddComponent<PatrolInfo>(headStickPatrolAI, glm::vec3(-6, 4, 0), glm::vec3(6, 4, 0), 0);
 
 
 	ecs.GetSystemManager().AddSystem<AISystem>();
