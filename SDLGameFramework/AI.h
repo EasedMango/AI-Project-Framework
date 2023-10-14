@@ -26,6 +26,14 @@ struct WanderInfo
 {
 
 };
+
+struct PatrolInfo
+{
+	glm::vec3 patrolPointA;
+	glm::vec3 patrolPointB;
+	bool AtpointA;
+	
+};
 struct AI
 {
 	AIBehaviors::BehaviorType currentBehavior;

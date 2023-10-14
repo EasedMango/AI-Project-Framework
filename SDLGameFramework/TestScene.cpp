@@ -41,6 +41,13 @@ bool TestScene::OnCreate(ECS& ecs)
 	registry.AddComponent<AI>(headStickArriveAI, AIBehaviors::BehaviorType::Arrive, headStick, SteeringOutput());
 	registry.AddComponent<ArriveInfo>(headStickArriveAI );
 
+	const auto headStickPatrolAI = registry.CreateEntity();
+	registry.AddComponent<Transform>(headStickPatrolAI);
+	registry.AddComponent<Body>(headStickPatrolAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	registry.AddComponent<Sprite>(headStickPatrolAI, renderer.CreateSprite("Head_With_A_Stick.png"));
+	registry.AddComponent<AI>(headStickPatrolAI, AIBehaviors::BehaviorType::Patrol, headStick, SteeringOutput());
+	registry.AddComponent<PatrolInfo>(headStickPatrolAI);
+
 	//Create circle of heads
 
 
