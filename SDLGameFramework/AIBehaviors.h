@@ -9,7 +9,7 @@
 
 struct ArriveInfo;
 struct SeekInfo;
-
+struct PatrolInfo;
 namespace AIBehaviors {
 
 	enum class BehaviorType
