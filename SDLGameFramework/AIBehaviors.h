@@ -19,7 +19,7 @@ namespace AIBehaviors {
 	};
 
 
-	SteeringOutput Seek(Body& characterBody, const Transform& characterTrans, const Transform& target, SeekInfo& info);
+	SteeringOutput Seek(const Body& characterBody, const Transform& characterTrans, const Transform& target, SeekInfo& info);
 
 
 	SteeringOutput Arrive(const Body& characterBody, const Transform& characterTrans, const Transform& target, ArriveInfo& info);

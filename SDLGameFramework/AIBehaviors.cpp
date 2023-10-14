@@ -4,7 +4,7 @@
 #include "AI.h"
 
 
-SteeringOutput AIBehaviors::Seek(Body& characterBody, const Transform& characterTrans, const Transform& target, SeekInfo& info)
+SteeringOutput AIBehaviors::Seek(const Body& characterBody, const Transform& characterTrans, const Transform& target, SeekInfo& info)
 {
 	SteeringOutput steering;
 	steering.angular = 0;

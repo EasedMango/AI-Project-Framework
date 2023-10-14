@@ -23,7 +23,7 @@ bool TestScene::OnCreate(ECS& ecs)
 	auto headStick = registry.CreateEntity();
 	registry.AddComponent<Transform>(headStick);
 	registry.AddComponent<Body>(headStick);
-	registry.AddComponent<Sprite>(headStick, renderer.CreateSprite("Head_With_A_Stick.png"));
+	registry.AddComponent<Sprite>(headStick, renderer.CreateSprite("Head_With_A_Stick.png",1,glm::vec4(255,0,0,255)));
 	registry.AddComponent<Player>(headStick);
 
 
