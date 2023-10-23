@@ -163,6 +163,12 @@
     <ClInclude Include="SteeringSystem.h">
       <Filter>Framework\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="FreeListAllocator.h">
+      <Filter>Utility\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryUtility.h">
+      <Filter>Utility\Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -263,6 +269,9 @@
     </ClCompile>
     <ClCompile Include="SteeringSystem.cpp">
       <Filter>Framework\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeListAllocator.cpp">
+      <Filter>Utility\Memory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

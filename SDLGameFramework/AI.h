@@ -11,7 +11,11 @@ struct SeekInfo
 
 struct ArriveInfo
 {
-
+	float maxSpeed;
+	float maxAcceleration;
+	float targetRadius;
+	float slowRadius;
+	float timeToTarget;
 };
 
 struct ChaseInfo

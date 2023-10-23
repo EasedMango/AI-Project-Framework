@@ -45,10 +45,12 @@
     <ClInclude Include="ECS\SparseSet.h" />
     <ClInclude Include="ECS\SystemManager.h" />
     <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="FreeListAllocator.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="MemoryTracker.h" />
+    <ClInclude Include="MemoryUtility.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerMovementSystem.h" />
     <ClInclude Include="Renderer.h" />
@@ -85,6 +87,7 @@
     <ClCompile Include="ECS\SparseSet.cpp" />
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="FreeListAllocator.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />
