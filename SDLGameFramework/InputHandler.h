@@ -3,18 +3,22 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <mutex>
+#include <glm/vec2.hpp>
 
 #include "Common.h"
 
 
 class EventHandler;
 
+
+
 class InputHandler {
 private:
 	Ref<EventHandler> sdlEventHandler;
 	std::mutex mutex;
 
-
+	glm::vec2 prevMousePosition;
+	glm::vec2 mousePosition;
 
 
 	//Keyboard callbacks
@@ -65,6 +69,21 @@ protected:
 	void MouseButtonUp(const SDL_Event& e);
 
 	void MouseMotion(const SDL_Event& e);
+
+	static void GetSDLMousePosition(int& x, int& y)
+	{
+		SDL_GetMouseState(&x, &y);
+	};
+
+	glm::vec2 GetMousePosition() const
+	{
+		return mousePosition;
+	};
+
+	glm::vec2 GetMouseDelta() const
+	{
+		return mousePosition - prevMousePosition;
+	};
 
 	void KeyHoldChecker();
 

@@ -29,6 +29,7 @@ void InputHandler::Start()
 	sdlEventHandler->RegisterCallback(SDL_MOUSEBUTTONDOWN, [this](const SDL_Event& e) {this->MouseButtonDown(e); });
 	sdlEventHandler->RegisterCallback(SDL_MOUSEBUTTONUP, [this](const SDL_Event& e) {this->MouseButtonUp(e); });
 	sdlEventHandler->RegisterCallback(SDL_MOUSEMOTION, [this](const SDL_Event& e) {this->MouseMotion(e); });
+	//sdlEventHandler->RegisterCallback(SDL_MOUSEMOTION, [this](const SDL_Event& e) {this->KeyDown(e); });
 	//  sdlEventHandler->RegisterCallback(SDL_MOUSEWHEEL, [this](const SDL_Event& e) {this->KeyDown; });
 
 }
@@ -96,13 +97,16 @@ void InputHandler::MouseMotion(const SDL_Event& e)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
-	const int x = e.motion.x;
-	const int y = e.motion.y;
+	prevMousePosition = mousePosition;
+	mousePosition .x = e.motion.x;
+	mousePosition .y = e.motion.y;
 
 	for (const auto& callback : mouseMotionCallbacks) {
 		callback(e);
 	}
 }
+
+
 
 void InputHandler::KeyHoldChecker()
 {

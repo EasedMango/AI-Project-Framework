@@ -22,6 +22,7 @@ public:
 	void Start();
 	void UpdateFrameTicks();
 	float GetDeltaTime() const;
+	float GetCurrentFPS() const;
 	unsigned int GetSleepTime(const unsigned int fps_) const;
 	float GetCurrentTicks() const;
 };

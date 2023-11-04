@@ -10,7 +10,10 @@
 #include "Timing.h"
 #include "Transform.h"
 #include "BodySystem.h"
+#include "CameraComp.h"
 #include "SteeringSystem.h"
+#include "SystemAccessors.h"
+#include "Timer.h"
 
 
 bool TestScene::OnCreate(ECS& ecs)
@@ -25,6 +28,7 @@ bool TestScene::OnCreate(ECS& ecs)
 	registry.AddComponent<Body>(headStick);
 	registry.AddComponent<Sprite>(headStick, renderer.CreateSprite("Head_With_A_Stick.png"));
 	registry.AddComponent<Player>(headStick);
+	registry.AddComponent<CameraComp>(headStick);
 
 
 	const auto headStickSeekAI = registry.CreateEntity();
@@ -84,6 +88,11 @@ void TestScene::Render(Registry& registry) const
 		// Create a temporary container to hold the entities
 		std::vector<std::tuple<float, ID>> zOrderedEntities;
 
+		auto camera = registry.CreateQuery().Include<CameraComp>().Find()[0];
+		auto posCam = registry.GetComponent<Transform>(camera).pos + glm::vec3(registry.GetComponent<CameraComp>(camera).position, 0.f);
+		renderer.GetCurrentCamera()->SetPosition(posCam);
+		renderer.GetCurrentCamera()->SetZoom(registry.GetComponent<CameraComp>(camera).zoom);
+
 		// Populate the container
 		for (auto que = registry.CreateQuery().Include<Transform, Sprite>(); const auto & entity : que.Find()) {
 			auto& transform = registry.GetComponent<Transform>(entity);
@@ -97,6 +106,8 @@ void TestScene::Render(Registry& registry) const
 			});
 		{
 			ImGui::Begin("Test");
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Text("Camera Position x%f, y%f, z%f", posCam.x, posCam.y, posCam.z);
 			// Now render the entities in the sorted order
 			for (const auto& item : zOrderedEntities) {
 				const auto& entity = std::get<1>(item);

@@ -169,6 +169,15 @@
     <ClInclude Include="MemoryUtility.h">
       <Filter>Utility\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="SystemAccessors.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComp.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -272,6 +281,12 @@
     </ClCompile>
     <ClCompile Include="FreeListAllocator.cpp">
       <Filter>Utility\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemAccessors.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

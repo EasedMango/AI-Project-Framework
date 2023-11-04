@@ -29,9 +29,11 @@
     <ClInclude Include="..\libs\ImGui\imstb_truetype.h" />
     <ClInclude Include="AI.h" />
     <ClInclude Include="AISystem.h" />
+    <ClInclude Include="AudioSystem.h" />
     <ClInclude Include="Body.h" />
     <ClInclude Include="BodySystem.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraComp.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Debug.h" />
@@ -59,6 +61,7 @@
     <ClInclude Include="AIBehaviors.h" />
     <ClInclude Include="SteeringOutput.h" />
     <ClInclude Include="SteeringSystem.h" />
+    <ClInclude Include="SystemAccessors.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Timing.h" />
@@ -75,6 +78,7 @@
     <ClCompile Include="..\libs\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="AIBehaviors.cpp" />
     <ClCompile Include="AISystem.cpp" />
+    <ClCompile Include="AudioSystem.cpp" />
     <ClCompile Include="BodySystem.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Core.cpp" />
@@ -97,6 +101,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SDLTypes.cpp" />
     <ClCompile Include="SteeringSystem.cpp" />
+    <ClCompile Include="SystemAccessors.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -154,7 +159,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)libs\OpenGL\include;$(SolutionDir)libs\SDL\include;$(SolutionDir)libs\ImGui;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libs\OpenGL\include;$(SolutionDir)libs\SDL\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\inc;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -162,6 +167,11 @@
     <IncludePath>$(SolutionDir)libs\OpenGL\include;$(SolutionDir)libs\SDL\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\bin\intermediates$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermediates\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)libs\OpenGL\include;$(SolutionDir)libs\SDL\include;$(SolutionDir)libs\ImGui;$(SolutionDir)libs\FMOD\inc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -212,14 +222,14 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)libs\OpenGL\lib\x64;$(SolutionDir)libs\SDL\lib\x64;$(IncludePath)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2main.lib;glew32.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\OpenGL\lib\x64;$(SolutionDir)libs\SDL\lib\x64;$(IncludePath);$(SolutionDir)libs\FMOD\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2main.lib;glew32.lib;glew32s.lib;opengl32.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
 xcopy /Y /E "$(SolutionDir)libs\OpenGL\dll\x64\*" "$(OutDir)"
 xcopy /Y /E "$(SolutionDir)libs\SDL\dll\x64\*" "$(OutDir)"
-</Command>
+xcopy /Y /E "$(SolutionDir)libs\FMOD\dll\x64\*" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -231,14 +241,15 @@ xcopy /Y /E "$(SolutionDir)libs\SDL\dll\x64\*" "$(OutDir)"
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\GameDev\OpenGL\lib;C:\GameDev\SDL\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2main.lib;glew32.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libs\OpenGL\lib\x64;$(SolutionDir)libs\SDL\lib\x64;$(IncludePath);$(SolutionDir)libs\FMOD\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2main.lib;glew32.lib;glew32s.lib;opengl32.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,5 @@
-﻿
+﻿#define GLM_SWIZZLE
+#include <glm/glm.hpp>
 #include "Core.h"
 #include "MemoryManager.h"
 #include "MemoryScene.h"
@@ -30,6 +31,6 @@ int main(int argc, char* argv[])
 
 		core->Run();
 	}
-	MemoryManager::CleanUp();
+//	MemoryManager::CleanUp();
 	return 0;
 }

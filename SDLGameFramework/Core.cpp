@@ -5,6 +5,8 @@
 #include "Common.h"
 #include "Window.h"
 #include <memory>
+
+#include "AudioSystem.h"
 #include "EventHandler.h"
 #include "InputHandler.h"
 #include "MemoryManager.h"
@@ -13,51 +15,79 @@
 #include "Timer.h"
 #include "Timing.h"
 #include "ECS/ECS.h"
-Core::Core()
+#include "SystemAccessors.h"
+Core::Core(): fps(0), isRunning(false), pause(false)
 {
 	Debug::Info("Starting Core");
 }
 
 
-
-
 bool Core::Initialize(const char* name_, int width_, int height_)
 {
-	// Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		Debug::FatalError("Failed to initialize SDL");
-		return false;
-	}
-	// Initialize SDL Image
-	int imgFlags = IMG_INIT_PNG;
-	if (!(IMG_Init(imgFlags) & imgFlags)) {
-		SDL_Log("SDL_image could not initialize! SDL_image Error: %s", IMG_GetError());
-		SDL_Quit();
-		return false;  // Changed from 'return 1;' to 'return false;'
+	{
+		TIMING("Initialize SDL");
+		// Initialize SDL
+		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+			Debug::FatalError("Failed to initialize SDL");
+			return false;
+		}
+		// Initialize SDL Image
+		int imgFlags = IMG_INIT_PNG;
+		if (!(IMG_Init(imgFlags) & imgFlags)) {
+			SDL_Log("SDL_image could not initialize! SDL_image Error: %s", IMG_GetError());
+			SDL_Quit();
+			return false;  // Changed from 'return 1;' to 'return false;'
+		}
 	}
 	// Create Window
-	window = std::make_unique<Window>();
-	if (!window->OnCreate(name_, width_, height_))
 	{
-		Debug::FatalError("Failed to create window");
-		return false;
+		TIMING("Create Window");
+		window = std::make_unique<Window>();
+		if (!window->OnCreate(name_, width_, height_))
+		{
+			Debug::FatalError("Failed to create window");
+			return false;
+		}
 	}
+	SystemAccessors::ProvideWindow(window);
 
 	// Create Renderer
-	renderer = Renderer::Create(window);
+	{
+		TIMING("Create Renderer");
+		renderer = Renderer::Create(window);
+	}
+	{
+		TIMING("Create Audio System");
+		audioSystem = std::make_shared<AudioSystem>();
 
+		if (!audioSystem->Initialize())
+		{
+			Debug::FatalError("Failed to initialize audio system");
+			return false;
+		}
+	}
+	SystemAccessors::ProvideAudioSystem(audioSystem);
 
 
 	// Create Event Handler
-	eventHandler = std::make_shared<EventHandler>();
+	{
+		TIMING("Create Event Handler and start thread");
+		eventHandler = std::make_shared<EventHandler>();
+		// Inject Event Handler Ref into Input Handler singleton
+		InputHandler::Instance().InjectHandler(eventHandler);
+		InputHandler::Instance().Start();
+	}
+	SystemAccessors::ProvideEventHandler(eventHandler);
 
-	// Inject Event Handler Ref into Input Handler singleton
-	InputHandler::Instance().InjectHandler(eventHandler);
-	InputHandler::Instance().Start();
-	timer = std::make_shared<Timer>();
-
-	ecs = ECS::Create();
-
+	{
+		TIMING("Create Timer");
+		timer = std::make_shared<Timer>();
+	}
+	SystemAccessors::ProvideTimer(timer);
+	{
+		TIMING("Create ECS");
+		ecs = ECS::Create();
+	}
 	eventHandler->RegisterCallback(SDL_QUIT, [&](const SDL_Event&)
 		{
 			isRunning = false;
@@ -65,6 +95,10 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 
 	InputHandler::Instance().RegisterKeyPressCallback(SDLK_ESCAPE, [&](const SDL_Event&) {
 		isRunning = false;
+		});
+	InputHandler::Instance().RegisterKeyPressCallback(SDLK_SPACE, [&](const SDL_Event&) {
+		auto soundPath = std::string("woosh.wav");
+		audioSystem->PlaySound(soundPath);
 		});
 	InputHandler::Instance().RegisterKeyPressCallback(SDLK_p, [&](const SDL_Event&) {
 		pause = !pause;
@@ -80,22 +114,32 @@ bool Core::Run()
 	isRunning = true;
 	pause = false;
 	fps = 144;
+	{
+		TIMING("Create Scene");
+			currentScene->OnCreate(*ecs);
+	}
+	SystemAccessors::ProvideCurrentScene(currentScene);
 
-	currentScene->OnCreate(*ecs);
 	timer->Start();
 	while (isRunning) {
 	//	TIMING("Run");
 		timer->UpdateFrameTicks();
 		eventHandler->HandleEvents();
 		InputHandler::Instance().KeyHoldChecker();
+		float dt = timer->GetDeltaTime();
 		if (!pause)
-			currentScene->Update(timer->GetDeltaTime(), *ecs);
+			currentScene->Update(dt, *ecs);
 		
 		currentScene->Render(ecs->GetRegistry());
 		SDL_GL_SwapWindow(window->GetWindow());
 		SDL_Delay(timer->GetSleepTime(fps));
 		//MemoryManager::CountAllocations();
 	}
+	//cleanup sdl
+
+
+	audioSystem->CleanUp();
 	currentScene->OnDestroy(*ecs);
+	SDL_Quit();
 	return false;
 }

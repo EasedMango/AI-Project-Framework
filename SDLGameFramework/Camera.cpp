@@ -45,6 +45,39 @@ Camera::Camera(Ref<Window>& window) : window(window)
     UpdateProjectionMatrix();
 }
 
+void Camera::UpdateViewMatrix()
+{
+    view = glm::translate(glm::mat4(1.0f), glm::vec3(-position, 0.0f));
+    view = glm::scale(view, glm::vec3(zoom, zoom, 1.0f)); // Apply zoom scaling
+
+}
+
+void Camera::SetPosition(const glm::vec2& newPosition)
+{
+    position = newPosition;
+    UpdateViewMatrix();
+}
+
+glm::vec2 Camera::GetPosition() const
+{
+    return position;
+}
+
+void Camera::SetZoom(float newZoom)
+{
+    zoom = newZoom > 0 ? newZoom : 1.0f; // Prevent zero or negative zoom levels
+    UpdateViewMatrix();
+}
+
+float Camera::GetZoom() const
+{
+    return zoom;
+}
+
+glm::mat4 Camera::GetViewMatrix() const
+{
+    return view;
+}
 
 
 

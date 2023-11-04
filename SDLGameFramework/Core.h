@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 
+class AudioSystem;
 class Window;
 class Scene;
 class Timer;
@@ -8,6 +9,9 @@ class EventHandler;
 #include "Scene.h"
 #include "TestScene.h"
 #include "GUI.h"
+
+
+
 class Core
 {
 private:
@@ -17,6 +21,7 @@ private:
 	Ref<Scene> currentScene;
 	ScopePtr<Renderer> renderer;
 	ScopePtr<ECS> ecs;
+	Ref<AudioSystem> audioSystem;
 
 
 	unsigned int fps;

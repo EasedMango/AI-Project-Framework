@@ -74,7 +74,7 @@ void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const floa
 	float    w, h;
 
 	// convert the position from game coords to screen coords
-	screenCoords = camera->GetProjectionMatrix() * glm::vec4(position,1.f);
+	screenCoords = camera->GetProjectionMatrix() * camera->GetViewMatrix() * glm::vec4(position,1.f);
 	w = texture->width * sprite.scale;
 	h = texture->height * sprite.scale;
 
