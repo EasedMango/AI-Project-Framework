@@ -20,6 +20,7 @@ struct Sprite
 	ID textureID;
 	int scale;
 	glm::vec4 colour = { 255,255,255,255 };
+	int width, height;
 };
 
 
@@ -39,8 +40,8 @@ private:
 protected:
 	friend class Core;
 	
-	static ScopePtr<Renderer> Create(const Ref<Window>& window) {
-		return ScopePtr<Renderer>(new Renderer(window));
+	static Ref<Renderer> Create(const Ref<Window>& window) {
+		return Ref<Renderer>(new Renderer(window));
 	}
 	friend class GUI;
 	Ref<Window>& GetWindow()  { return window; }
@@ -74,6 +75,8 @@ public:
 	 z value of position is used to determine render order (higher z values are rendered last)
 	 */
 	void RenderSprite(Sprite sprite, const glm::vec3& position, const  float& angle) const;
+
+	void RenderGrid();
 
 	void RenderColoredRect(const glm::vec3& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color) const;
 

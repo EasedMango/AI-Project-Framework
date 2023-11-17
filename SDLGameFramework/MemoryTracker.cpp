@@ -65,24 +65,30 @@ bool FixedSizeQueue::empty() const
 void MemoryTracker::Updater()
 {
     while (true) {
+
         std::unique_lock<std::mutex> lock(mtx);
         //print current queue size
       //  printf("Queue size: %zu\n", actionsInstance.count);  // Updated here to work with your custom queue
         //print current map size
      //   printf("Map size: %zu\n", allocationsInstance.count);  // Updated here to work with your custom map
-
+       // printf("memo1");
         cv.wait(lock, [] { return !actionsInstance.empty() || exitFlag; });  // Updated here
         if (exitFlag && actionsInstance.empty()) break;  // And here
         if(actionsInstance.empty()) printf("\nEmpty!\n");;  // Updated here to work with your custom queue)
         while (!actionsInstance.empty()) {  // And here
+           
             AllocationAction action;
             actionsInstance.pop(action);  // Updated here to work with your custom queue
+           // printf("action : ");
+           // printf("%d\n", action.isAllocation);
+
+
             if (action.isAllocation) {
                 allocationsInstance.insert(action.address, { action.size });  // Updated here
                 currentMemoryUsage += action.size;
                 peakMemoryUsage = std::max(peakMemoryUsage, currentMemoryUsage);
                 totalMemoryAllocations++;
-               // printf("Allocated %zu bytes at address %p\n", action.size, action.address);
+             //  printf("Allocated %zu bytes at address %p\n", action.size, action.address);
             }
             else {
                 auto info = allocationsInstance.find(action.address);  // Updated here
@@ -90,7 +96,7 @@ void MemoryTracker::Updater()
                     currentMemoryUsage -= info->size;
                     allocationsInstance.erase(action.address);  // Updated here
                     totalMemoryDeallocations++;
-                   // printf("Deallocated %zu bytes at address %p\n", info->size, action.address);
+                //   printf("Deallocated %zu bytes at address %p\n", info->size, action.address);
                 }
             }
         }

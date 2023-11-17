@@ -15,4 +15,5 @@ struct Body
     float maxRotation;
     float maxAngular;
     float radius=1;           // for getting near walls
+    float restitution=0.5;    // for bouncing off walls
 };

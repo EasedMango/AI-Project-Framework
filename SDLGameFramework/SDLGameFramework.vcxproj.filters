@@ -32,6 +32,9 @@
     <Filter Include="Framework\AI">
       <UniqueIdentifier>{e405209b-d77c-4600-ab7c-9caff1d8a3aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Physics">
+      <UniqueIdentifier>{0645a7dd-3cc3-4b05-a2db-983c0a84647c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -163,6 +166,45 @@
     <ClInclude Include="SteeringSystem.h">
       <Filter>Framework\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="FreeListAllocator.h">
+      <Filter>Utility\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryUtility.h">
+      <Filter>Utility\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemsLocator.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComp.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystem.h">
+      <Filter>Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsMath.h">
+      <Filter>Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.h">
+      <Filter>Framework\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialHash.h">
+      <Filter>Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="UISystem.h">
+      <Filter>Framework\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="UIClasses.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -263,6 +305,36 @@
     </ClCompile>
     <ClCompile Include="SteeringSystem.cpp">
       <Filter>Framework\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeListAllocator.cpp">
+      <Filter>Utility\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemsLocator.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSystem.cpp">
+      <Filter>Framework\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsMath.cpp">
+      <Filter>Framework\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSystem.cpp">
+      <Filter>Framework\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SpatialHash.cpp">
+      <Filter>Framework\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="UISystem.cpp">
+      <Filter>Framework\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="UIClasses.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Framework</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -2,14 +2,11 @@
 #include <mutex>
 
 #include "BlockManager.h"
+#include "FreeListAllocator.h"
 #include "MemoryTracker.h"
+#include "Timing.h"
 
 
-
-static constexpr size_t BYTE = 1;
-static constexpr size_t KILO_BYTE = 1024 * BYTE;
-static constexpr size_t MEGA_BYTE = 1024 * KILO_BYTE;
-static constexpr size_t GIGA_BYTE = 1024 * MEGA_BYTE;
 
 
 
@@ -25,12 +22,13 @@ class MemoryManager
 
 
 
-	static BlockManager& Blocks(size_t size = 0)
+
+	static Memory::Allocator& FreeList(void* start = nullptr,void* end=nullptr, size_t size=0)
 	{
-		static BlockManager blockManager = BlockManager(size);
+		static Memory::Allocator blockManager = Memory::Allocator(start,end,size);
 		return blockManager;
 	}
-
+	inline static bool clean=false;
 	inline static int newAndDeleteInFrameNum = 0;
 
 public:
@@ -40,12 +38,26 @@ public:
 	{
 
 		//FreeList().Init(bufferSize);
-		Blocks(bufferSize);
+
+		void* buffer = calloc(bufferSize,1);
+		FreeList(buffer, PTR(buffer)+bufferSize,bufferSize);
+
+		//MemoryTracker();
 
 	};
 
+	~MemoryManager()
+	{
+		CleanUp();
+	}
+
 	static void CleanUp()
 	{
+		if(!clean)
+		{
+			clean = true;
+			FreeList().CleanUp();
+		}
 		//	GetFreeList()->CleanUp();
 	};
 
@@ -57,14 +69,26 @@ public:
 
 	static void* Allocate(size_t numBytes, size_t alignment = alignof(std::max_align_t))
 	{
-		auto ptr = malloc(numBytes);//Blocks().Allocate(numBytes);
-		MemoryTracker::UpdateMemoryTracker(false, ptr, numBytes);
+		//TIMING("Allocate");
+		//auto ptr = malloc(numBytes);
+		auto ptr = FreeList().Alloc(numBytes, alignment);//malloc(numBytes);//Blocks().Allocate(numBytes);
+		if(!FreeList().WithinHeap(ptr))
+		{
+			printf("Within heap\n");
+		}
+		MemoryTracker::UpdateMemoryTracker(true, ptr, numBytes);
 		return ptr;
 	};
 	static void Deallocate(void* memoryLocation, size_t numBytes, size_t alignment = alignof(std::max_align_t))
 	{
+		//TIMING("Deallocate");
+		if (!FreeList().WithinHeap(memoryLocation))
+		{
+			printf("Within heap\n");
+		}
 		MemoryTracker::UpdateMemoryTracker(false, memoryLocation, numBytes);
-		free(memoryLocation);//Blocks().Free(memoryLocation);
+		//free(memoryLocation);
+		FreeList().Dealloc(memoryLocation);//free(memoryLocation);//Blocks().Free(memoryLocation);
 		//Blocks().Free(memoryLocation);
 	};
 };

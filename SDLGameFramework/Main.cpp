@@ -1,4 +1,5 @@
-﻿
+﻿#define GLM_SWIZZLE
+#include <glm/glm.hpp>
 #include "Core.h"
 #include "MemoryManager.h"
 #include "MemoryScene.h"
@@ -18,8 +19,8 @@ int main(int argc, char* argv[])
 	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
 	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
-	MemoryManager::Init(MEGA_BYTE* 2);
-	MemoryTracker::GetMemoryTracker();
+	MemoryManager::Init(MEGA_BYTE* 200);
+
 	{
 
 		const auto core = std::make_unique<Core>();
@@ -30,6 +31,6 @@ int main(int argc, char* argv[])
 
 		core->Run();
 	}
-	//MemoryTracker::DebugMemoryInfo();
+//	MemoryManager::CleanUp();
 	return 0;
 }

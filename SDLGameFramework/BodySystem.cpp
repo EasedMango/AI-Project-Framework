@@ -4,6 +4,7 @@
 
 
 #include "Body.h"
+#include "SpatialHash.h"
 
 #include "Transform.h"
 
@@ -36,11 +37,17 @@ void BodySystem::OnCreate(Registry& registry)
 
 void BodySystem::Update(const float& deltaTime, Registry& registry)
 {
+	auto&& spatialHash = registry.GetComponent<SpatialHash>(registry.CreateQuery().Include<SpatialHash>().Find()[0]);
+    spatialHash.clear();
+
+
+
 	for (auto que = registry.CreateQuery().Include<Transform, Body>(); const auto & entity : que.Find()) {
 		auto& transform = registry.GetComponent<Transform>(entity);
 		auto& movement = registry.GetComponent<Body>(entity);
 
-		UpdateBody(deltaTime, movement, transform);
+        UpdateBody(deltaTime, movement, transform);
+		spatialHash.insert(entity, transform);
 	}
 }
 
