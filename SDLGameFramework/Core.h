@@ -19,17 +19,22 @@ private:
 	Ref<Timer> timer;
 	Ref<EventHandler> eventHandler;
 	Ref<Scene> currentScene;
-	ScopePtr<Renderer> renderer;
+	Ref<Renderer> renderer;
 	ScopePtr<ECS> ecs;
 	Ref<AudioSystem> audioSystem;
 
 
 	unsigned int fps;
 	bool isRunning;
-	bool pause;
+	inline static bool pause = false;
 public:
 	Core();
 
+
+	static void Pause()
+	{
+				pause = !pause;
+	}
 	template<typename T>
 	void BuildNewScene()
 	{
@@ -38,8 +43,7 @@ public:
 
 
 	bool Initialize(const char* name_, int width_, int height_);
-	template<typename T>
-	void SetInitalScene();
+
 
 
 

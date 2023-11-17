@@ -29,6 +29,9 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 			case AIBehaviors::BehaviorType::Chase:
 				ai.steering += AIBehaviors::Chase(body, transform, targetTransform, registry.GetComponent<ChaseInfo>(entity));
 				break;
+			case AIBehaviors::BehaviorType::Wander:
+				ai.steering += AIBehaviors::Wander(body, transform, Grid<25>::GetInstance(), registry.GetComponent<WanderInfo>(entity));
+				break;
 			case AIBehaviors::BehaviorType::Patrol:
 				ai.steering += AIBehaviors::Patrol(body, transform, targetTransform, registry.GetComponent<PatrolInfo>(entity));
 				break;

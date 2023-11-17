@@ -29,16 +29,10 @@ private:
 	std::unordered_set<SDL_Keycode> keysHeld;
 
 
-	struct SDL_MouseButtonEventHash {
-		std::size_t operator()(const SDL_MouseButtonEvent& e) const;
-	};
 
-	struct SDL_MouseButtonEventEqual {
-		bool operator()(const SDL_MouseButtonEvent& lhs, const SDL_MouseButtonEvent& rhs) const;
-	};
 	//Mouse callbacks
-	std::unordered_map<SDL_MouseButtonEvent, std::function<void(const SDL_Event&)>, SDL_MouseButtonEventHash, SDL_MouseButtonEventEqual> mouseButtonDownCallbacks;
-	std::unordered_map<SDL_MouseButtonEvent, std::function<void(const SDL_Event&)>, SDL_MouseButtonEventHash, SDL_MouseButtonEventEqual> mouseButtonUpCallbacks;
+	std::unordered_map<int, std::function<void(const SDL_Event&)>> mouseButtonDownCallbacks;
+	std::unordered_map<int, std::function<void(const SDL_Event&)>> mouseButtonUpCallbacks;
 	std::vector<std::function<void(const SDL_Event&)>> mouseMotionCallbacks;
 
 
@@ -52,7 +46,7 @@ private:
 protected:
 	friend class Core;
 
-	void InjectHandler(Ref<EventHandler>& sdlEventHandler);
+	void InjectHandler(const Ref<EventHandler>& sdlEventHandler);
 
 
 
@@ -99,4 +93,10 @@ public:
 	void RegisterKeyHoldCallback(SDL_Keycode key, std::function<void()> callback);
 
 	void RegisterKeyReleaseCallback(SDL_Keycode key, std::function<void(const SDL_Event&)> callback);
+
+	void RegisterMouseButtonDownCallback(int button, std::function<void(const SDL_Event&)> callback);
+
+	void RegisterMouseButtonUpCallback(int button, std::function<void(const SDL_Event&)> callback);
+
+	void RegisterMouseMotionCallback(std::function<void(const SDL_Event&)> callback);
 };

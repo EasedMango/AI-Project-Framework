@@ -34,6 +34,8 @@
     <ClInclude Include="BodySystem.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComp.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Debug.h" />
@@ -48,24 +50,30 @@
     <ClInclude Include="ECS\SystemManager.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="FreeListAllocator.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="MemoryTracker.h" />
     <ClInclude Include="MemoryUtility.h" />
+    <ClInclude Include="PhysicsMath.h" />
+    <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerMovementSystem.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SDLTypes.h" />
     <ClInclude Include="AIBehaviors.h" />
+    <ClInclude Include="SpatialHash.h" />
     <ClInclude Include="SteeringOutput.h" />
     <ClInclude Include="SteeringSystem.h" />
-    <ClInclude Include="SystemAccessors.h" />
+    <ClInclude Include="SystemsLocator.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Timing.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UIClasses.h" />
+    <ClInclude Include="UISystem.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +89,7 @@
     <ClCompile Include="AudioSystem.cpp" />
     <ClCompile Include="BodySystem.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="ECS\ComponentManager.cpp" />
@@ -92,18 +101,24 @@
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="FreeListAllocator.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
     <ClCompile Include="MemoryTracker.cpp" />
+    <ClCompile Include="PhysicsMath.cpp" />
+    <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="PlayerMovementSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SDLTypes.cpp" />
+    <ClCompile Include="SpatialHash.cpp" />
     <ClCompile Include="SteeringSystem.cpp" />
-    <ClCompile Include="SystemAccessors.cpp" />
+    <ClCompile Include="SystemsLocator.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="UIClasses.cpp" />
+    <ClCompile Include="UISystem.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

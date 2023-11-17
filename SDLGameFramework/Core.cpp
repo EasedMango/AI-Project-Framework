@@ -15,8 +15,8 @@
 #include "Timer.h"
 #include "Timing.h"
 #include "ECS/ECS.h"
-#include "SystemAccessors.h"
-Core::Core(): fps(0), isRunning(false), pause(false)
+#include "SystemsLocator.h"
+Core::Core(): fps(0), isRunning(false)
 {
 	Debug::Info("Starting Core");
 }
@@ -49,13 +49,14 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 			return false;
 		}
 	}
-	SystemAccessors::ProvideWindow(window);
+	SystemsLocator::ProvideWindow(window);
 
 	// Create Renderer
 	{
 		TIMING("Create Renderer");
 		renderer = Renderer::Create(window);
 	}
+	SystemsLocator::ProvideRenderer(renderer);
 	{
 		TIMING("Create Audio System");
 		audioSystem = std::make_shared<AudioSystem>();
@@ -66,7 +67,7 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 			return false;
 		}
 	}
-	SystemAccessors::ProvideAudioSystem(audioSystem);
+	SystemsLocator::ProvideAudioSystem(audioSystem);
 
 
 	// Create Event Handler
@@ -77,13 +78,13 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 		InputHandler::Instance().InjectHandler(eventHandler);
 		InputHandler::Instance().Start();
 	}
-	SystemAccessors::ProvideEventHandler(eventHandler);
+	SystemsLocator::ProvideEventHandler(eventHandler);
 
 	{
 		TIMING("Create Timer");
 		timer = std::make_shared<Timer>();
 	}
-	SystemAccessors::ProvideTimer(timer);
+	SystemsLocator::ProvideTimer(timer);
 	{
 		TIMING("Create ECS");
 		ecs = ECS::Create();
@@ -118,7 +119,7 @@ bool Core::Run()
 		TIMING("Create Scene");
 			currentScene->OnCreate(*ecs);
 	}
-	SystemAccessors::ProvideCurrentScene(currentScene);
+	SystemsLocator::ProvideCurrentScene(currentScene);
 
 	timer->Start();
 	while (isRunning) {

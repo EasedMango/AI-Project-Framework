@@ -36,11 +36,13 @@ Sprite Renderer::CreateSprite(const std::string& filename, int scale,glm::vec4 c
 {
 	auto it = textureMap.find(filename);
 	ID textureID;
-
-	if (it != textureMap.end())
+	int width, height;
+	if (textureMap.contains(filename))
 	{
 		// Texture already exists, reuse it.
 		textureID = it->second;
+		width = textures[textureID]->width;
+		height = textures[textureID]->height;
 	}
 	else
 	{
@@ -54,7 +56,7 @@ Sprite Renderer::CreateSprite(const std::string& filename, int scale,glm::vec4 c
 			;
 			return Sprite{ 0, 0 };
 		}
-		int width, height;
+
 		SDL_QueryTexture(sdlTexture.get(), nullptr, nullptr, &width, &height);
 
 		textureID = textures.size();
@@ -62,7 +64,7 @@ Sprite Renderer::CreateSprite(const std::string& filename, int scale,glm::vec4 c
 		textureMap[filename] = textureID;
 	}
 
-	return Sprite{ textureID, scale,colour };
+	return Sprite{ textureID, scale,colour,width,height };
 }
 
 void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const float& angle ) const
@@ -75,8 +77,10 @@ void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const floa
 
 	// convert the position from game coords to screen coords
 	screenCoords = camera->GetProjectionMatrix() * camera->GetViewMatrix() * glm::vec4(position,1.f);
-	w = texture->width * sprite.scale;
-	h = texture->height * sprite.scale;
+
+
+	w = (texture->width * sprite.scale);
+	h = (texture->height * sprite.scale);
 
 	square.x = static_cast<int>(screenCoords.x - 0.5f * w);
 	square.y = static_cast<int>(screenCoords.y - 0.5f * h);
@@ -92,6 +96,12 @@ void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const floa
 	
 
 }
+
+void Renderer::RenderGrid()
+{
+
+}
+
 void Renderer::RenderColoredRect(const glm::vec3& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color=glm::vec4(255,255,255, 255)) const
 {
 	SDL_Rect rect;

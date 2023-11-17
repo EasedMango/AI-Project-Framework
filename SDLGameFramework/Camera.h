@@ -12,6 +12,11 @@ private:
 	glm::mat4 view;
 	glm::vec2 position;
 	float zoom=1;//scale
+	//pixel camera variables
+
+	float pixelsPerUnit = 64.f; // This comes from your orthographic size setup
+
+
 	Camera(Ref<Window>& window);
 
 
@@ -25,6 +30,7 @@ protected:
 
 
 public:
+	float GetPixelsPerUnit() const { return pixelsPerUnit; }
 
 	glm::mat4 UpdateProjectionMatrix();
 

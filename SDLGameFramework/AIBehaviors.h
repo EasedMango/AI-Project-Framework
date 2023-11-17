@@ -3,10 +3,12 @@
 
 
 #include "Body.h"
+#include "Grid.h"
 #include "SteeringOutput.h"
 #include "Transform.h"
 
 
+struct WanderInfo;
 struct PatrolInfo;
 struct ArriveInfo;
 struct SeekInfo;
@@ -20,6 +22,7 @@ namespace AIBehaviors {
 		Chase,
 		Arrive,
 		Patrol,
+		Wander,
 		Flee
 	};
 
@@ -31,6 +34,8 @@ namespace AIBehaviors {
 	SteeringOutput Arrive(const Body& characterBody, const Transform& characterTrans, const Transform& target, ArriveInfo& info);
 	
 	SteeringOutput Patrol(const Body& characterBody, const Transform& characterTrans, const Transform& target, PatrolInfo& info);
+
+	SteeringOutput Wander(const Body& characterBody, const Transform& characterTrans,  Grid<25>& target, WanderInfo& info);
 
 
 	SteeringOutput Flee(Body& characterBody, const Transform& characterTrans, const Transform& target, FleeInfo& info);

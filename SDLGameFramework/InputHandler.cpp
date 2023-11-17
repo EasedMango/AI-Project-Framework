@@ -1,21 +1,10 @@
 ﻿#include "InputHandler.h"
 #include "EventHandler.h"
-std::size_t InputHandler::SDL_MouseButtonEventHash::operator()(const SDL_MouseButtonEvent& e) const
-{
-	// Implement your custom hash function here
-	return std::hash<int>()(e.button) ^ std::hash<int>()(e.clicks) ^ std::hash<int>()(e.state);
-}
 
-bool InputHandler::SDL_MouseButtonEventEqual::operator()(const SDL_MouseButtonEvent& lhs,
-	const SDL_MouseButtonEvent& rhs) const
-{
-	// Implement your custom equality check here
-	return lhs.button == rhs.button && lhs.clicks == rhs.clicks && lhs.state == rhs.state;
-}
 
 InputHandler::InputHandler() = default;
 
-void InputHandler::InjectHandler(Ref<EventHandler>& sdlEventHandler)
+void InputHandler::InjectHandler(const Ref<EventHandler>& sdlEventHandler)
 {
 	this->sdlEventHandler = sdlEventHandler;
 }
@@ -75,22 +64,22 @@ void InputHandler::MouseButtonDown(const SDL_Event& e)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
-	const auto button = e.button;
+	const int button = e.button.button;
 
-	if (mouseButtonDownCallbacks.contains(button)) {
-		mouseButtonDownCallbacks[button](e);
-	}
+	//if (mouseButtonDownCallbacks.contains(button)) {
+	//	mouseButtonDownCallbacks[button](e);
+//	}
 }
 
 void InputHandler::MouseButtonUp(const SDL_Event& e)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
-	const auto button = e.button;
+	const int button = e.button.button;
 
-	if (mouseButtonUpCallbacks.contains(button)) {
-		mouseButtonUpCallbacks[button](e);
-	}
+	//if (mouseButtonUpCallbacks.contains(button)) {
+	//	mouseButtonUpCallbacks[button](e);
+	///}
 }
 
 void InputHandler::MouseMotion(const SDL_Event& e)
@@ -98,8 +87,8 @@ void InputHandler::MouseMotion(const SDL_Event& e)
 	std::lock_guard<std::mutex> lock(mutex);
 
 	prevMousePosition = mousePosition;
-	mousePosition .x = e.motion.x;
-	mousePosition .y = e.motion.y;
+	mousePosition.x = e.motion.x;
+	mousePosition.y = e.motion.y;
 
 	for (const auto& callback : mouseMotionCallbacks) {
 		callback(e);
@@ -145,4 +134,24 @@ void InputHandler::RegisterKeyReleaseCallback(SDL_Keycode key, std::function<voi
 {
 	std::lock_guard<std::mutex> lock(mutex);
 	keyUpCallbacks[key] = callback;
+}
+
+void InputHandler::RegisterMouseButtonDownCallback(int button,
+	std::function<void(const SDL_Event&)> callback)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	mouseButtonDownCallbacks[button] = callback;
+}
+
+void InputHandler::RegisterMouseButtonUpCallback(int button,
+	std::function<void(const SDL_Event&)> callback)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	mouseButtonUpCallbacks[button] = callback;
+}
+
+void InputHandler::RegisterMouseMotionCallback(std::function<void(const SDL_Event&)> callback)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	mouseMotionCallbacks.push_back(callback);
 }
