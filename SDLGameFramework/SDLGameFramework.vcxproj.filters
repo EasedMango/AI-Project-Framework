@@ -205,6 +205,21 @@
     <ClInclude Include="Grid.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="MapReader.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionMath.h">
+      <Filter>Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -335,6 +350,19 @@
     </ClCompile>
     <ClCompile Include="Grid.cpp">
       <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="MapReader.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMap.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionMath.cpp">
+      <Filter>Framework\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

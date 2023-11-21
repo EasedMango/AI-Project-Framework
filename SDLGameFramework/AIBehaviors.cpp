@@ -12,10 +12,9 @@ SteeringOutput AIBehaviors::Seek(const Body& characterBody, const Transform& cha
 	SteeringOutput steering;
 	steering.angular = 0;
 
-	glm::vec3 direction = target.pos - characterTrans.pos;
-	float distance = glm::length(direction);
+	const glm::vec3 direction = target.pos - characterTrans.pos;
 
-	if (distance > 0) {
+	if (const float distance = glm::length(direction); distance > 0) {
 		float targetSpeed;
 
 		// If the target is close enough, then slow down
@@ -160,7 +159,7 @@ SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& c
 	return steering;
 }
 
-SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& characterTrans, Grid<25>& target,
+SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& characterTrans, Grid& target,
 	WanderInfo& info)
 {
 	SteeringOutput steering;
@@ -172,8 +171,20 @@ SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& c
 	if (info.path.empty())
 	{
 		const auto currentTile = target.GetTile(characterTrans.pos.x, characterTrans.pos.y);
-		const auto randomTile = target.GetTile(dist(rng), dist(rng));
-		info.path = target.GetPath(currentTile, randomTile);
+		auto randomTile = target.GetTile(dist(rng), dist(rng));
+
+
+		auto path = target.GetPath(currentTile, randomTile);
+
+		//while (path.empty())
+		//{
+		//	randomTile = target.GetTile(dist(rng), dist(rng));
+		//	path = target.GetPath(currentTile, randomTile);
+		//}
+		if(path.empty())
+			return steering;
+
+		info.path = path;
 		info.currentPathIndex = 0;
 	}
 	auto targetTile = info.path[info.currentPathIndex];
@@ -189,8 +200,9 @@ SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& c
 	}
 
 	Transform targetTrans = Transform{ glm::vec3{targetTile->x,targetTile->y,0},0 };
-	auto d = ArriveInfo{ info.speed,characterBody.maxAcceleration,0.25f,1.f,1.f };
-	return Arrive(characterBody, characterTrans, targetTrans, d);
+//	auto d = ArriveInfo{ info.speed,characterBody.maxAcceleration,0.1f,0.5f,0.1f };
+	auto d = SeekInfo{ 0,1.f };
+	return Seek(characterBody, characterTrans, targetTrans, d);
 }
 
 

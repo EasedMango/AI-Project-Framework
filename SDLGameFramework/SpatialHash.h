@@ -14,9 +14,9 @@ class SpatialHash {
 	int totalEntities = 0;
 	int totalBuckets = 0;
 public:
-	int bucketSize = 40;  // Depending on your needs, you may want a larger or smaller bucket size
+	int bucketSize = 4;  // Depending on your needs, you may want a larger or smaller bucket size
 	//Atleast slightly bigger than the biggest entity size
-	explicit SpatialHash(int bucketSize = 40);;
+	explicit SpatialHash(int bucketSize = 4);;
 
 
 	int hash(int bucketX, int bucketY);

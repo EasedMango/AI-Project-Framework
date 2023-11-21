@@ -35,7 +35,7 @@ namespace AIBehaviors {
 	
 	SteeringOutput Patrol(const Body& characterBody, const Transform& characterTrans, const Transform& target, PatrolInfo& info);
 
-	SteeringOutput Wander(const Body& characterBody, const Transform& characterTrans,  Grid<25>& target, WanderInfo& info);
+	SteeringOutput Wander(const Body& characterBody, const Transform& characterTrans, Grid& target, WanderInfo& info);
 
 
 	SteeringOutput Flee(Body& characterBody, const Transform& characterTrans, const Transform& target, FleeInfo& info);

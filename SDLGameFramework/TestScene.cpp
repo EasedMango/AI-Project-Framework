@@ -19,8 +19,11 @@
 #include "SpatialHash.h"
 #include "SteeringSystem.h"
 #include "SystemsLocator.h"
+#include "TileMap.h"
 #include "Timer.h"
 #include "UIClasses.h"
+
+
 
 
 bool TestScene::OnCreate(ECS& ecs)
@@ -30,49 +33,77 @@ bool TestScene::OnCreate(ECS& ecs)
 	auto& registry = ecs.GetRegistry();
 
 	const auto bg = registry.CreateEntity();
-	registry.AddComponent<Transform>(bg, glm::vec3(0.f, 0.f, -1.f));
-	registry.AddComponent<Sprite>(bg, renderer.CreateSprite("GrossBG.png", 4));
+	registry.AddComponent<Transform>(bg, glm::vec3(9.5f, 7.f, -1.f));
+	registry.AddComponent<Sprite>(bg, renderer.CreateSprite("DD_Test_Map2.png"));
 
 
-	auto headStick = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStick);
+	const auto headStick = registry.CreateEntity();
+	registry.AddComponent<Transform>(headStick, glm::vec3(4, 2, 0));
+	auto& transform = registry.GetComponent<Transform>(headStick);
 	registry.AddComponent<Body>(headStick);
-	registry.AddComponent<Sprite>(headStick, renderer.CreateSprite("Square.png"));
+	registry.AddComponent<Sprite>(headStick, renderer.CreateSprite("Main_char64.png"));
 	registry.AddComponent<Player>(headStick);
 	registry.AddComponent<CameraComp>(headStick);
-	registry.AddComponent<Collider>(headStick, ColliderShape::BoxCollider, 1);
-	registry.AddComponent<BoxCollider>(headStick, 0.5f, 0.5f, 0, glm::vec2(0, 0));
+	registry.AddComponent<Collider>(headStick, ColliderShape::CircleCollider, 1);
+	registry.AddComponent<CircleCollider>(headStick, glm::vec2(0, 0), 0.5f);
 
 	const auto headStickSeekAMove = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStickSeekAMove);
-	registry.AddComponent<Body>(headStickSeekAMove, glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	registry.AddComponent<Sprite>(headStickSeekAMove, renderer.CreateSprite("Square.png"));
-	registry.AddComponent<Collider>(headStickSeekAMove, ColliderShape::BoxCollider, 1);
-	registry.AddComponent<BoxCollider>(headStickSeekAMove, 0.5f, 0.5f, 0, glm::vec2(0, 0));
-	registry.AddComponent<AI>(headStickSeekAMove, AIBehaviors::BehaviorType::Wander, headStickSeekAMove, SteeringOutput());
-	registry.AddComponent<WanderInfo>(headStickSeekAMove, 5, glm::vec2(0, 0), 1, std::vector<Tile*>(), 0);
+	registry.AddComponent<Transform>(headStickSeekAMove, glm::vec3(4, 4, 0));
+	auto& transform2 = registry.GetComponent<Transform>(headStickSeekAMove);
+	registry.AddComponent<Body>(headStickSeekAMove, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	registry.AddComponent<Sprite>(headStickSeekAMove, renderer.CreateSprite("Care.png"));
+	registry.AddComponent<Collider>(headStickSeekAMove, ColliderShape::CircleCollider, 1);
+	registry.AddComponent<CircleCollider>(headStickSeekAMove, glm::vec2(0, 0), 0.5f);
+	registry.AddComponent<AI>(headStickSeekAMove,  std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Wander,1} });
+	registry.AddComponent<WanderInfo>(headStickSeekAMove, 10, glm::vec2(9.5f, 7.f), 1, std::vector<Tile*>(), 0);
 
 
 
 
-	/*const auto headStickSeekAI = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStickSeekAI);
-	registry.AddComponent<Body>(headStickSeekAI, glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	registry.AddComponent<Sprite>(headStickSeekAI, renderer.CreateSprite("Head_With_A_Stick.png"));
-	registry.AddComponent<AI>(headStickSeekAI, AIBehaviors::BehaviorType::Seek, headStick, SteeringOutput());
-	registry.AddComponent<SeekInfo>(headStickSeekAI, 1);
-	registry.AddComponent<Collider>(headStickSeekAI, ColliderShape::BoxCollider, 1);
-	registry.AddComponent<BoxCollider>(headStickSeekAI, 1, 1, 0, glm::vec2(0, 0));
 
-	const auto headStickArriveAI = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStickArriveAI);
-	registry.AddComponent<Body>(headStickArriveAI, glm::vec3(4, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	registry.AddComponent<Sprite>(headStickArriveAI, renderer.CreateSprite("Head_With_A_Stick.png"));
-	registry.AddComponent<AI>(headStickArriveAI, AIBehaviors::BehaviorType::Flee, headStick, SteeringOutput());
-	registry.AddComponent<FleeInfo>(headStickArriveAI);
-	registry.AddComponent<Collider>(headStickArriveAI, ColliderShape::BoxCollider, 1);
-	registry.AddComponent<BoxCollider>(headStickArriveAI, 1, 1, 0, glm::vec2(0, 0));
 
+
+	const auto& grid = TileMap::Instance("Map/64map.tsx").GetGrid();
+	const auto tiles = grid.GetTiles();
+	for (int i = 0; i < grid.GetWidth(); ++i)
+	{
+		for (int j = 0; j < grid.GetHeight(); ++j)
+		{
+			if (auto&& tile = tiles[i][j]; tile->wall)
+			{
+				//auto floor = registry.CreateEntity();
+				//registry.AddComponent<Sprite>(floor, renderer.CreateSprite("Square.png",1,glm::vec4(255,255,255,255)));
+				//registry.AddComponent<Transform>(floor, glm::vec3(tile->x, tile->y, -1.f));
+				const auto wall = registry.CreateEntity();
+				//registry.AddComponent<Sprite>(wall, renderer.CreateSprite("Square.png", 1, glm::vec4(0, 0, 0, 255)));
+				registry.AddComponent<Transform>(wall, glm::vec3(tile->x, tile->y, -1.f));
+				registry.AddComponent<Collider>(wall, ColliderShape::BoxCollider, 1, false);
+				registry.AddComponent<BoxCollider>(wall, 0.5f, 0.5f, 0, glm::vec2(0, 0));
+			}
+
+		}
+	}
+
+	//const auto headStickSeekAI = registry.CreateEntity();
+	//registry.AddComponent<Transform>(headStickSeekAI,glm::vec3(4.f,3.f,0.f));
+	//auto& transform3 = registry.GetComponent<Transform>(headStickSeekAI);
+	//registry.AddComponent<Body>(headStickSeekAI, glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	//registry.AddComponent<Sprite>(headStickSeekAI, renderer.CreateSprite("Head_With_A_Stick.png"));
+	//registry.AddComponent<AI>(headStickSeekAI,  std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Seek, 1},{AIBehaviors::BehaviorType::Flee,0.5f} });
+	//registry.AddComponent<SeekInfo>(headStickSeekAI, headStick, 1);
+	//registry.AddComponent<FleeInfo>(headStickSeekAI, headStickSeekAMove, 1);
+	//registry.AddComponent<Collider>(headStickSeekAI, ColliderShape::BoxCollider, 1);
+	//registry.AddComponent<BoxCollider>(headStickSeekAI, 1, 1, 0, glm::vec2(0, 0));
+
+	//const auto headStickArriveAI = registry.CreateEntity();
+	//registry.AddComponent<Transform>(headStickArriveAI);
+	//registry.AddComponent<Body>(headStickArriveAI, glm::vec3(4, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	//registry.AddComponent<Sprite>(headStickArriveAI, renderer.CreateSprite("Head_With_A_Stick.png"));
+	//registry.AddComponent<AI>(headStickArriveAI, AIBehaviors::BehaviorType::Flee, headStick, SteeringOutput());
+	//registry.AddComponent<FleeInfo>(headStickArriveAI);
+	//registry.AddComponent<Collider>(headStickArriveAI, ColliderShape::BoxCollider, 1);
+	//registry.AddComponent<BoxCollider>(headStickArriveAI, 1, 1, 0, glm::vec2(0, 0));
+/*
 	const auto CareAI = registry.CreateEntity();
 	registry.AddComponent<Transform>(CareAI);
 	registry.AddComponent<Body>(CareAI, glm::vec3(6, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 5, 50, 3, 3, 1);
@@ -172,7 +203,7 @@ void TestScene::Render(Registry& registry) const
 		std::vector<std::tuple<float, ID>> zOrderedEntities;
 
 		static auto camera = registry.CreateQuery().Include<CameraComp>().Find()[0];
-		auto posCam = registry.GetComponent<Transform>(camera).pos + glm::vec3(registry.GetComponent<CameraComp>(camera).position, 0.f);
+		const auto posCam = registry.GetComponent<Transform>(camera).pos + glm::vec3(registry.GetComponent<CameraComp>(camera).position, 0.f);
 		renderer.GetCurrentCamera()->SetPosition(posCam);
 		renderer.GetCurrentCamera()->SetZoom(registry.GetComponent<CameraComp>(camera).zoom);
 
@@ -196,7 +227,7 @@ void TestScene::Render(Registry& registry) const
 				const auto& entity = std::get<1>(item);
 				auto& transform = registry.GetComponent<Transform>(entity);
 				ImGui::Text("ID: %i Pos: x%f, y%f, z%f", entity, transform.pos.x, transform.pos.y, transform.pos.z);
-				auto& sprite = registry.GetComponent<Sprite>(entity);
+				const auto& sprite = registry.GetComponent<Sprite>(entity);
 				renderer.RenderSprite(sprite, transform.pos, transform.rot);
 			}
 			if (ImGui::TreeNode("Bodies")) {
@@ -206,10 +237,10 @@ void TestScene::Render(Registry& registry) const
 					std::string s = ("Entity: "); s.append(std::to_string(entity));
 					if (ImGui::TreeNode(s.c_str()))
 					{
-						auto& transform = registry.GetComponent<Transform>(entity);
+						const auto& transform = registry.GetComponent<Transform>(entity);
 						ImGui::Text("Transform:\n Pos: x%f, y%f, z%f\n Rot: %f", transform.pos.x, transform.pos.y, transform.pos.z, transform.rot);
 
-						auto& body = registry.GetComponent<Body>(entity);
+						const auto& body = registry.GetComponent<Body>(entity);
 						ImGui::Text("\nBody:\n"
 							" Vel     : x%f, y%f, z%f\n"
 							" Accel   : x%f, y%f, z%f\n"

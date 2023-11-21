@@ -7,11 +7,13 @@
 
 struct SeekInfo
 {
+	ID target;
 	float maxAcceleration;
 };
 
 struct ArriveInfo
 {
+	ID target;
 	float maxSpeed;
 	float maxAcceleration;
 	float targetRadius;
@@ -21,13 +23,15 @@ struct ArriveInfo
 
 struct ChaseInfo
 {
-
+	ID target;
 };
 
 struct FleeInfo
 {
-
+	ID target;
+	float maxAcceleration;
 };
+
 
 struct WanderInfo
 {
@@ -36,26 +40,31 @@ struct WanderInfo
 	float speed;
 	std::vector<Tile*> path;
 	int currentPathIndex;
-	
+
 };
 
 struct PatrolInfo
 {
+	ID target;
 	glm::vec3 patrolPointA;
 	glm::vec3 patrolPointB;
 	bool AtpointA;
 };
 
-
+struct WeightedBehavior
+{
+	AIBehaviors::BehaviorType behavior;
+	float weight;
+};
 
 
 struct AI
 {
-	AIBehaviors::BehaviorType currentBehavior;
-	ID target;
-
+	std::vector<WeightedBehavior> behaviors;
 	SteeringOutput steering;
 
+
 };
+
 
 
