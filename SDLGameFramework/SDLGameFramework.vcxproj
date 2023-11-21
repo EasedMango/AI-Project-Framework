@@ -35,6 +35,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComp.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="CollisionMath.h" />
     <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Common.h" />
@@ -53,6 +54,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="MapReader.h" />
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="MemoryTracker.h" />
     <ClInclude Include="MemoryUtility.h" />
@@ -62,6 +64,7 @@
     <ClInclude Include="PlayerMovementSystem.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SDLTypes.h" />
     <ClInclude Include="AIBehaviors.h" />
     <ClInclude Include="SpatialHash.h" />
@@ -69,8 +72,10 @@
     <ClInclude Include="SteeringSystem.h" />
     <ClInclude Include="SystemsLocator.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="TileMap.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Timing.h" />
+    <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UIClasses.h" />
     <ClInclude Include="UISystem.h" />
@@ -89,6 +94,7 @@
     <ClCompile Include="AudioSystem.cpp" />
     <ClCompile Include="BodySystem.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionMath.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -105,18 +111,22 @@
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MapReader.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
     <ClCompile Include="MemoryTracker.cpp" />
     <ClCompile Include="PhysicsMath.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="PlayerMovementSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SDLTypes.cpp" />
     <ClCompile Include="SpatialHash.cpp" />
     <ClCompile Include="SteeringSystem.cpp" />
     <ClCompile Include="SystemsLocator.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="UIClasses.cpp" />
     <ClCompile Include="UISystem.cpp" />
     <ClCompile Include="Window.cpp" />

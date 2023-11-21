@@ -14,4 +14,14 @@ struct SteeringOutput
 		angular += v.angular;
 		return *this;
 	}
+
+
+
+};
+inline SteeringOutput& operator*(const float lhs, const SteeringOutput& rhs) 
+{
+	SteeringOutput result = rhs;
+	result.linear *= lhs;
+	result.angular *= lhs;
+	return result;
 };

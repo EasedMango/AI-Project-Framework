@@ -23,12 +23,12 @@ class MemoryManager
 
 
 
-	static Memory::Allocator& FreeList(void* start = nullptr,void* end=nullptr, size_t size=0)
+	static Memory::Allocator& FreeList(void* start = nullptr, void* end = nullptr, size_t size = 0)
 	{
-		static Memory::Allocator blockManager = Memory::Allocator(start,end,size);
+		static Memory::Allocator blockManager = Memory::Allocator(start, end, size);
 		return blockManager;
 	}
-	inline static bool clean=false;
+	inline static bool clean = false;
 	inline static int newAndDeleteInFrameNum = 0;
 
 public:
@@ -39,8 +39,8 @@ public:
 
 		//FreeList().Init(bufferSize);
 
-		void* buffer = calloc(bufferSize,1);
-		FreeList(buffer, PTR(buffer)+bufferSize,bufferSize);
+		void* buffer = calloc(bufferSize, 1);
+		FreeList(buffer, PTR(buffer) + bufferSize, bufferSize);
 
 		//MemoryTracker();
 
@@ -53,7 +53,7 @@ public:
 
 	static void CleanUp()
 	{
-		if(!clean)
+		if (!clean)
 		{
 			clean = true;
 			FreeList().CleanUp();
@@ -70,25 +70,35 @@ public:
 	static void* Allocate(size_t numBytes, size_t alignment = alignof(std::max_align_t))
 	{
 		//TIMING("Allocate");
-		//auto ptr = malloc(numBytes);
-		auto ptr = FreeList().Alloc(numBytes, alignment);//malloc(numBytes);//Blocks().Allocate(numBytes);
-		if(!FreeList().WithinHeap(ptr))
+		auto ptr = malloc(numBytes);
+		//auto ptr = FreeList().Alloc(numBytes, alignment);//malloc(numBytes);//Blocks().Allocate(numBytes);
+		if (ptr == nullptr)
 		{
-			printf("Within heap\n");
+			std::cout << "Failed to allocate memory" << std::endl;
+			return nullptr;
 		}
+		//if(!FreeList().WithinHeap(ptr))
+		//{
+		//	std::cout << "new not within heap" << std::endl;
+		//}
 		MemoryTracker::UpdateMemoryTracker(true, ptr, numBytes);
 		return ptr;
 	};
 	static void Deallocate(void* memoryLocation, size_t numBytes, size_t alignment = alignof(std::max_align_t))
 	{
 		//TIMING("Deallocate");
-		if (!FreeList().WithinHeap(memoryLocation))
-		{
-			printf("Within heap\n");
+		//if (!FreeList().WithinHeap(memoryLocation))
+		//{
+		//	std::cout << "delete not within heap" << std::endl;
+		//}
+		if (memoryLocation == nullptr) {
+			std::cout << "Trying to delete nullptr" << std::endl;
+			return;
 		}
+
 		MemoryTracker::UpdateMemoryTracker(false, memoryLocation, numBytes);
-		//free(memoryLocation);
-		FreeList().Dealloc(memoryLocation);//free(memoryLocation);//Blocks().Free(memoryLocation);
-		//Blocks().Free(memoryLocation);
+		free(memoryLocation);
+		//	FreeList().Dealloc(memoryLocation);//free(memoryLocation);//Blocks().Free(memoryLocation);
+			//Blocks().Free(memoryLocation);
 	};
 };

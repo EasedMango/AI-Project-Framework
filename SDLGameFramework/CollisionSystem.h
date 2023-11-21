@@ -5,8 +5,7 @@ class CollisionSystem : public ISystem
 {
 
 private:
-	
-	void CheckCollision(Registry& registry, const ID& entity1, const ID& entity2, const float& deltaTime);
+	static void CheckCollision(Registry& registry, const ID& entity1, const ID& entity2, const float& deltaTime);
 	
 public:
 	void OnCreate(Registry& registry) override;

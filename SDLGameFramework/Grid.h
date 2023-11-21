@@ -19,18 +19,20 @@ struct Tile
 	int x, y;
 	bool walkable;
 	float cost;
+	bool wall=false;
 	float gCost;
 	float hCost;
 
 	Tile* parent;
 
 public:
-	Tile(int x = 0, int y = 0, bool walkable = true, float cost = 1.f)
+	Tile(int x = 0, int y = 0, bool walkable = true, float cost = 1.f,bool wall = false)
 	{
 		this->x = x;
 		this->y = y;
 		this->walkable = walkable;
 		this->cost = cost;
+		this->wall = wall;
 		parent = nullptr;
 	}
 
@@ -51,12 +53,12 @@ struct CompareTile {
 	}
 };
 
-template <size_t Width, size_t Height = Width>
+//template <size_t Width, size_t Height = Width>
 class Grid
 {
 private:
-	const size_t width = Width, height = Height;
-	std::array<std::array<Tile*, Height>, Width> tiles;
+	const size_t width = 0, height = 0;
+	std::vector<std::vector<Tile* >> tiles;
 	float Heuristic(Tile* a, Tile* b) {
 		// Manhattan distance as an example
 		return std::abs(a->x - b->x) + std::abs(a->y - b->y);
@@ -64,42 +66,26 @@ private:
 
 
 
-	void InitializeTiles()
-	{
 
-		for (int x = 0; x < Width; ++x) {
-			for (int y = 0; y < Height; ++y) {
-				bool walkable = (rand() % 100) > 10; // 80% chance of being walkable
-				float cost = walkable ? (1.0f + (rand() % 3)) : FLT_MAX; // Cost between 1 and 3 for walkable tiles
-				tiles[x][y] = new Tile(x, y, walkable, cost);
-			}
-		}
-		//int xOffset = Width / 2;
-		//int yOffset = Height / 2;
-		//for (int x = 0; x < Width; x++)
-		//{
-		//	for (int y = 0; y < Height; ++y)
-		//	{
-		//		tiles[x][y] = new Tile(x - xOffset, y - yOffset, true);
-		//	}
-		//}
-	}
 
 public:
+	explicit Grid(const std::vector<std::vector<Tile* >>& tiles) : width(tiles.size()), height(tiles[0].size()), tiles(tiles)
+	{
+
+	}
+
+	std::vector<std::vector<Tile* >> GetTiles() const { return tiles; }
+
 	auto GetWidth() const { return width; }
 	auto GetHeight() const { return height; }
 
-	static Grid<Width,Height>& GetInstance()
-	{
-		static Grid<Width, Height> instance;
-		return instance;
-	}
+
 
 	void Print(Tile* startTile = nullptr, Tile* endTile = nullptr, const std::vector<Tile*>& path = {})
 	{
-		for (int y = Height - 1; y >= 0; --y)
+		for (int y = height - 1; y >= 0; --y)
 		{
-			for (int x = 0; x < Width; ++x)
+			for (int x = 0; x < width; ++x)
 			{
 				Tile* currentTile = tiles[x][y];
 
@@ -124,23 +110,7 @@ public:
 		}
 	}
 
-	Grid()
-	{
-		tiles = {};
-		InitializeTiles();
-	}
 
-
-	~Grid()
-	{
-		for (int x = 0; x < Width; x++)
-		{
-			for (int y = 0; y < Height; ++y)
-			{
-				delete tiles[x][y];
-			}
-		}
-	}
 
 
 
@@ -188,7 +158,7 @@ public:
 
 		if (endTile->parent == nullptr || endTile == nullptr)
 		{
-			std::cerr << "No path found!" << std::endl;
+		//	std::cerr << "No path found!" << std::endl;
 			return {};
 		}
 		// Reconstruct path
@@ -215,7 +185,7 @@ public:
 
 			neighbours[0] = nullptr;
 
-		if (x < Width - 1)
+		if (x < width - 1)
 			neighbours[1] = GetTile(x + 1, y);
 		else
 			neighbours[1] = nullptr;
@@ -223,7 +193,7 @@ public:
 			neighbours[2] = GetTile(x, y - 1);
 		else
 			neighbours[2] = nullptr;
-		if (y < Height - 1)
+		if (y < height - 1)
 			neighbours[3] = GetTile(x, y + 1);
 		else
 			neighbours[3] = nullptr;
@@ -237,8 +207,8 @@ public:
 		y = round(y);
 
 		// Clamp the values within the valid range
-		x = std::clamp(x, 0.0f, static_cast<float>(Width - 1));
-		y = std::clamp(y, 0.0f, static_cast<float>(Height - 1));
+		x = std::clamp(x, 0.0f, static_cast<float>(width - 1));
+		y = std::clamp(y, 0.0f, static_cast<float>(height - 1));
 
 		return tiles[static_cast<int>(x)][static_cast<int>(y)];
 	}

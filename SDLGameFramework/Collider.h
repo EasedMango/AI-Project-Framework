@@ -40,6 +40,7 @@ struct Collider
 {
 	ColliderShape shape;
 	unsigned int layer;
+	bool dynamic=true;
 	//CollisionState collisionState;
 };
 
