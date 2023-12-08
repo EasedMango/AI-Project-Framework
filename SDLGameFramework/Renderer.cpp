@@ -7,7 +7,7 @@
 #include "glm/vec3.hpp"
 
 
-Renderer::Renderer(const Ref<Window>& window) : window(window)
+Renderer::Renderer(Window* window) : window(window)
 {
 	renderer =  SDLRendererPtr( SDL_CreateRenderer(window->GetWindow(), -1, SDL_RENDERER_ACCELERATED));
 	imGui = std::make_unique<GUI>(*this);

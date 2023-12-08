@@ -1,17 +1,24 @@
 ﻿#pragma once
+#include <variant>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include "AIBehaviors.h"
 #include "Common.h"
 #include "Grid.h"
+#include "SteeringOutput.h"
 
-struct SeekInfo
+
+
+
+
+
+struct SeekInfo 
 {
 	ID target;
 	float maxAcceleration;
 };
 
-struct ArriveInfo
+struct ArriveInfo 
 {
 	ID target;
 	float maxSpeed;
@@ -21,19 +28,19 @@ struct ArriveInfo
 	float timeToTarget;
 };
 
-struct ChaseInfo
+struct ChaseInfo 
 {
 	ID target;
 };
 
-struct FleeInfo
+struct FleeInfo 
 {
 	ID target;
 	float maxAcceleration;
 };
 
 
-struct WanderInfo
+struct WanderInfo 
 {
 	float range;
 	glm::vec2 center;
@@ -43,13 +50,15 @@ struct WanderInfo
 
 };
 
-struct PatrolInfo
+struct PatrolInfo 
 {
 	ID target;
 	glm::vec3 patrolPointA;
 	glm::vec3 patrolPointB;
 	bool AtpointA;
 };
+
+using AIInfo = std::variant<SeekInfo, ArriveInfo, ChaseInfo, FleeInfo, WanderInfo, PatrolInfo>;
 
 struct WeightedBehavior
 {

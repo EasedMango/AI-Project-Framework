@@ -1,21 +1,20 @@
 #include "Core.h"
+
 #include <SDL.h>
 #include <SDL_image.h>
-#include "Debug.h"
-#include "Common.h"
-#include "Window.h"
-#include <memory>
 
 #include "AudioSystem.h"
-#include "EventHandler.h"
-#include "InputHandler.h"
-#include "MemoryManager.h"
+#include "Debug.h"
 #include "Renderer.h"
-#include "Scene.h"
+#include "SceneManager.h"
+#include "SystemsLocator.h"
 #include "Timer.h"
 #include "Timing.h"
-#include "ECS/ECS.h"
-#include "SystemsLocator.h"
+#include "Window.h"
+
+
+class TestScene;
+
 Core::Core(): fps(0), isRunning(false)
 {
 	Debug::Info("Starting Core");
@@ -42,21 +41,21 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 	// Create Window
 	{
 		TIMING("Create Window");
-		window = std::make_unique<Window>();
+		window = std::make_shared<Window>();
 		if (!window->OnCreate(name_, width_, height_))
 		{
 			Debug::FatalError("Failed to create window");
 			return false;
 		}
 	}
-	SystemsLocator::ProvideWindow(window);
+	SystemsLocator::ProvideWindow(window.get());
 
 	// Create Renderer
 	{
 		TIMING("Create Renderer");
-		renderer = Renderer::Create(window);
+		renderer = Renderer::Create(window.get());
 	}
-	SystemsLocator::ProvideRenderer(renderer);
+	SystemsLocator::ProvideRenderer(renderer.get());
 	{
 		TIMING("Create Audio System");
 		audioSystem = std::make_shared<AudioSystem>();
@@ -67,7 +66,7 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 			return false;
 		}
 	}
-	SystemsLocator::ProvideAudioSystem(audioSystem);
+	SystemsLocator::ProvideAudioSystem(audioSystem.get());
 
 
 	// Create Event Handler
@@ -75,20 +74,25 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 		TIMING("Create Event Handler and start thread");
 		eventHandler = std::make_shared<EventHandler>();
 		// Inject Event Handler Ref into Input Handler singleton
-		InputHandler::Instance().InjectHandler(eventHandler);
+		InputHandler::Instance().InjectHandler(eventHandler.get());
 		InputHandler::Instance().Start();
 	}
-	SystemsLocator::ProvideEventHandler(eventHandler);
+	SystemsLocator::ProvideEventHandler(eventHandler.get());
 
 	{
 		TIMING("Create Timer");
 		timer = std::make_shared<Timer>();
 	}
-	SystemsLocator::ProvideTimer(timer);
+	SystemsLocator::ProvideTimer(timer.get());
+
+
 	{
-		TIMING("Create ECS");
-		ecs = ECS::Create();
+		TIMING("Create SceneManager");
+		sceneManager = std::make_shared<SceneManager>(renderer.get());
 	}
+
+	SystemsLocator::ProvideSceneManager(sceneManager.get());
+
 	eventHandler->RegisterCallback(SDL_QUIT, [&](const SDL_Event&)
 		{
 			isRunning = false;
@@ -97,14 +101,21 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 	InputHandler::Instance().RegisterKeyPressCallback(SDLK_ESCAPE, [&](const SDL_Event&) {
 		isRunning = false;
 		});
+
 	InputHandler::Instance().RegisterKeyPressCallback(SDLK_SPACE, [&](const SDL_Event&) {
 		auto soundPath = std::string("woosh.wav");
 		audioSystem->PlaySound(soundPath);
 		});
+
 	InputHandler::Instance().RegisterKeyPressCallback(SDLK_p, [&](const SDL_Event&) {
 		pause = !pause;
 		std::cout << "Pause: " << std::boolalpha << pause << std::endl;
 		});
+	InputHandler::Instance().RegisterKeyPressCallback(SDLK_0, [](const SDL_Event& event)
+		{
+			SystemsLocator::GetSceneManager()->SetScene<TestScene>();
+		});
+
 	return true;
 }
 
@@ -117,9 +128,9 @@ bool Core::Run()
 	fps = 144;
 	{
 		TIMING("Create Scene");
-			currentScene->OnCreate(*ecs);
+			sceneManager->OnCreate();
 	}
-	SystemsLocator::ProvideCurrentScene(currentScene);
+	
 
 	timer->Start();
 	while (isRunning) {
@@ -129,9 +140,9 @@ bool Core::Run()
 		InputHandler::Instance().KeyHoldChecker();
 		float dt = timer->GetDeltaTime();
 		if (!pause)
-			currentScene->Update(dt, *ecs);
+			sceneManager->Update(dt);
 		
-		currentScene->Render(ecs->GetRegistry());
+		sceneManager->Render();
 		SDL_GL_SwapWindow(window->GetWindow());
 		SDL_Delay(timer->GetSleepTime(fps));
 		//MemoryManager::CountAllocations();
@@ -140,7 +151,7 @@ bool Core::Run()
 
 
 	audioSystem->CleanUp();
-	currentScene->OnDestroy(*ecs);
+	sceneManager->OnDestroy();
 	SDL_Quit();
 	return false;
 }

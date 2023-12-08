@@ -1,4 +1,4 @@
-﻿#define GLM_SWIZZLE
+﻿
 #include <glm/glm.hpp>
 #include "Core.h"
 #include "MemoryManager.h"
@@ -6,8 +6,6 @@
 #include "MemoryTracker.h"
 //#include <vld.h>
 class TestScene;
-
-
 
 //main loop
 int main(int argc, char* argv[])

@@ -4,7 +4,7 @@
 
 InputHandler::InputHandler() = default;
 
-void InputHandler::InjectHandler(const Ref<EventHandler>& sdlEventHandler)
+void InputHandler::InjectHandler(EventHandler* sdlEventHandler) 
 {
 	this->sdlEventHandler = sdlEventHandler;
 }

@@ -28,6 +28,7 @@
     <ClInclude Include="..\libs\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\libs\ImGui\imstb_truetype.h" />
     <ClInclude Include="AI.h" />
+    <ClInclude Include="AICommon.h" />
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="AudioSystem.h" />
     <ClInclude Include="Body.h" />
@@ -64,6 +65,7 @@
     <ClInclude Include="PlayerMovementSystem.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Scene2.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SDLTypes.h" />
     <ClInclude Include="AIBehaviors.h" />
@@ -79,6 +81,8 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UIClasses.h" />
     <ClInclude Include="UISystem.h" />
+    <ClInclude Include="Vision.h" />
+    <ClInclude Include="VisionSystem.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +122,7 @@
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="PlayerMovementSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Scene2.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SDLTypes.cpp" />
     <ClCompile Include="SpatialHash.cpp" />
@@ -129,6 +134,7 @@
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="UIClasses.cpp" />
     <ClCompile Include="UISystem.cpp" />
+    <ClCompile Include="VisionSystem.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

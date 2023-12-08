@@ -4,41 +4,72 @@
 #include "EventHandler.h"
 #include "Window.h"
 #include "Scene.h"
-void SystemsLocator::ProvideWindow(const Ref<Window>& win)
-{ window = win; }
+void SystemsLocator::ProvideWindow(Window* win)
+{
+	window = win;
+}
 
-void SystemsLocator::ProvideTimer(const Ref<Timer>& tim)
-{ timer = tim; }
+void SystemsLocator::ProvideTimer(Timer* tim)
+{
+	timer = tim;
+}
 
-void SystemsLocator::ProvideEventHandler(const Ref<EventHandler>& event)
-{ eventHandler = event; }
+void SystemsLocator::ProvideEventHandler(EventHandler* event)
+{
+	eventHandler = event;
+}
 
-void SystemsLocator::ProvideCurrentScene(const Ref<Scene>& scene)
-{ currentScene = scene; }
+void SystemsLocator::ProvideCurrentScene(Scene* scene)
+{
+	currentScene = scene;
+}
 
-void SystemsLocator::ProvideAudioSystem(const Ref<AudioSystem>& audio)
-{ audioSystem = audio; }
+void SystemsLocator::ProvideAudioSystem(AudioSystem* audio)
+{
+	audioSystem = audio;
+}
 
-void SystemsLocator::ProvideRenderer(const Ref<Renderer>& renderer_)
+void SystemsLocator::ProvideRenderer(Renderer* renderer_)
 {
 	renderer = renderer_;
 }
 
-Ref<Window> SystemsLocator::GetWindow()
-{ return window; }
+void SystemsLocator::ProvideSceneManager(SceneManager* sceneManager_)
+{
+	sceneManager = sceneManager_;
+}
 
-Ref<Timer> SystemsLocator::GetTimer()
-{ return timer; }
+SceneManager* SystemsLocator::GetSceneManager()
+{
+	return sceneManager;
+}
 
-Ref<EventHandler> SystemsLocator::GetEventHandler()
-{ return eventHandler; }
+Window* SystemsLocator::GetWindow()
+{
+	return window;
+}
 
-Ref<Scene> SystemsLocator::GetCurrentScene()
-{ return currentScene; }
+Timer* SystemsLocator::GetTimer()
+{
+	return timer;
+}
 
-Ref<AudioSystem> SystemsLocator::GetAudioSystem()
-{ return audioSystem; }
+EventHandler* SystemsLocator::GetEventHandler()
+{
+	return eventHandler;
+}
 
-Ref<Renderer> SystemsLocator::GetRenderer()
-{ return renderer;
+Scene* SystemsLocator::GetCurrentScene()
+{
+	return currentScene;
+}
+
+AudioSystem* SystemsLocator::GetAudioSystem()
+{
+	return audioSystem;
+}
+
+Renderer* SystemsLocator::GetRenderer()
+{
+	return renderer;
 }

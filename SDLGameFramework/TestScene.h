@@ -7,10 +7,11 @@ class TestScene :
 private:
     bool gui=true;
 public:
-    TestScene(const Ref<Renderer>& renderer) : Scene(*renderer) {}
-    bool OnCreate(ECS& ecs) override;
-    void OnDestroy(ECS& ecs) override;
-    void Update(const float& deltaTime, ECS& ecs) override;
-    void Render( Registry& registry) const override;
+    TestScene(Renderer* renderer) : Scene(renderer) {}
+    bool OnCreate() override;
+    void OnDestroy() override;
+    void Update(const float& deltaTime) override;
+    void Render() const override;
+
 };
 

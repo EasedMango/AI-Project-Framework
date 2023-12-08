@@ -182,9 +182,7 @@ public:
 		if (x > 0)
 			neighbours[0] = GetTile(x - 1, y);
 		else
-
 			neighbours[0] = nullptr;
-
 		if (x < width - 1)
 			neighbours[1] = GetTile(x + 1, y);
 		else

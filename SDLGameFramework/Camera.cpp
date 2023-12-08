@@ -31,7 +31,7 @@ glm::mat4 Camera::UpdateProjectionMatrix()
 
 }
 
-Camera::Camera(Ref<Window>& window) : window(window)
+Camera::Camera(Window* window) : window(window)
 {
     UpdateProjectionMatrix();
 }

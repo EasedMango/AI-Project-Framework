@@ -220,6 +220,18 @@
     <ClInclude Include="SceneManager.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="Scene2.h">
+      <Filter>SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="VisionSystem.h">
+      <Filter>Framework\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Vision.h">
+      <Filter>Framework\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AICommon.h">
+      <Filter>Framework\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Debug.cpp">
@@ -363,6 +375,12 @@
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene2.cpp">
+      <Filter>SDL</Filter>
+    </ClCompile>
+    <ClCompile Include="VisionSystem.cpp">
+      <Filter>Framework\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

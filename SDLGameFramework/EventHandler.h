@@ -15,5 +15,8 @@ protected:
     void HandleEvents();
 public:
 
+    EventHandler()=default;
+    ~EventHandler()=default;
+
     void RegisterCallback(Uint32 eventType, std::function<void(const SDL_Event&)> callback);
 };

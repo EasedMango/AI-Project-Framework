@@ -7,21 +7,22 @@ class Camera;
 class Scene
 {
 protected:
-	Ref<Camera> camera;
-	 Renderer& renderer;
+	Ref<Camera> mainCamera;//camera is non owning to a specific object
+	Renderer* renderer;
+
+	ScopePtr<ECS> ecs;//
+
 public:
 	virtual ~Scene() {}
-	Scene(Renderer& renderer) : renderer(renderer)
+	Scene(Renderer* renderer) : renderer(renderer)
 	{
-		
-		camera = renderer.CreateCamera();
-		renderer.GiveCamera(camera);
-
+		mainCamera = renderer->CreateCamera();
+		renderer->GiveCamera(mainCamera);
 	}
-	virtual bool OnCreate(ECS& ecs) = 0;
-	virtual void OnDestroy(ECS& ecs) = 0;
-	virtual void Update(const float& deltaTime, ECS& ecs) = 0;
-	virtual void Render(  Registry& ecs) const = 0;
+	virtual bool OnCreate() = 0;
+	virtual void OnDestroy() = 0;
+	virtual void Update(const float& deltaTime) = 0;
+	virtual void Render() const = 0;
 
 
 

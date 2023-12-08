@@ -7,7 +7,7 @@ class Window;
 class Camera
 {
 private:
-	Ref<Window> window;
+	Window* window;
 	glm::mat4 projection;
 	glm::mat4 view;
 	glm::vec2 position;
@@ -17,13 +17,14 @@ private:
 	float pixelsPerUnit = 64.f; // This comes from your orthographic size setup
 
 
-	Camera(Ref<Window>& window);
+
 
 
 	void UpdateViewMatrix();
 protected:
 	friend class Renderer;
-	static Ref<Camera> Create(Ref<Window>& window)
+	explicit Camera(Window* window);
+	static Ref<Camera> Create(Window* window)
 	{
 		return Ref<Camera>(new Camera( window));
 	}

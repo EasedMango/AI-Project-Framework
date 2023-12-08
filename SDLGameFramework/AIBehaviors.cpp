@@ -69,7 +69,7 @@ SteeringOutput AIBehaviors::Chase(Body& characterBody, const Transform& characte
 	// If the target is close enough, then slow down
 
 	targetSpeed = characterBody.maxSpeed;
-	glm::vec3 targetVelocity = glm::normalize(direction) * targetSpeed;
+	const glm::vec3 targetVelocity = glm::normalize(direction) * targetSpeed;
 
 	// Put together the target for Chase
 	Transform ChaseTarget = target;
@@ -124,7 +124,7 @@ SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& c
 	float distance = glm::length(direction);
 
 
-	SeekInfo si = SeekInfo(1.0f);
+	SeekInfo si = SeekInfo{ 0,1.0f };
 
 	if (distance < 2) {
 

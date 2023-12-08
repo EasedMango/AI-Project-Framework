@@ -32,7 +32,7 @@ std::vector<ID> SpatialHash::query(const Transform& pos)
 	std::vector<ID> potentialCollisions;
 
 	// Reserve an estimated size
-	potentialCollisions.reserve(9 * averageEntitiesPerBucket); // Adjust based on your expectations
+	potentialCollisions.reserve(9 * averageEntitiesPerBucket); 
 
 	// Check adjacent buckets
 	for (int i = -1; i <= 1; ++i) {
@@ -46,7 +46,28 @@ std::vector<ID> SpatialHash::query(const Transform& pos)
 
 	return potentialCollisions;
 }
+std::vector<ID> SpatialHash::query(const Transform& pos, int radius)
+{
+	const int averageEntitiesPerBucket = totalEntities / std::max(1, totalBuckets);
+	const int bucketX = pos.pos.x / bucketSize;
+	const int bucketY = pos.pos.y / bucketSize;
+	std::vector<ID> potentialCollisions;
 
+	// Reserve an estimated size based on the radius
+	potentialCollisions.reserve((2 * radius + 1) * (2 * radius + 1) * averageEntitiesPerBucket);
+
+	// Check buckets within the specified radius
+	for (int i = -radius; i <= radius; ++i) {
+		for (int j = -radius; j <= radius; ++j) {
+			int hashValue = hash(bucketX + i, bucketY + j);
+			if (auto it = buckets.find(hashValue); it != buckets.end()) {
+				potentialCollisions.insert(potentialCollisions.end(), it->second.begin(), it->second.end());
+			}
+		}
+	}
+
+	return potentialCollisions;
+}
 void SpatialHash::clear()
 {
 	buckets.clear();

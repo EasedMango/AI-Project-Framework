@@ -6,15 +6,12 @@
 #include <glm/vec2.hpp>
 
 #include "Common.h"
-
-
-class EventHandler;
-
+#include "EventHandler.h"
 
 
 class InputHandler {
 private:
-	Ref<EventHandler> sdlEventHandler;
+	 EventHandler* sdlEventHandler;
 	std::mutex mutex;
 
 	glm::vec2 prevMousePosition;
@@ -46,7 +43,7 @@ private:
 protected:
 	friend class Core;
 
-	void InjectHandler(const Ref<EventHandler>& sdlEventHandler);
+	void InjectHandler(EventHandler* sdlEventHandler);
 
 
 

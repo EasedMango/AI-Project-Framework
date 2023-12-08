@@ -96,6 +96,6 @@ GUI::GUI(Renderer& renderer): io(Setup())
 	//ImGui::StyleColorsLight();
 
 	// Setup Platform/Renderer backends
-	ImGui_ImplSDL2_InitForSDLRenderer(renderer.GetWindow()->GetWindow(), renderer.GetRenderer().get());
+	ImGui_ImplSDL2_InitForSDLRenderer(renderer.GetWindow().GetWindow(), renderer.GetRenderer().get());
 	ImGui_ImplSDLRenderer2_Init(renderer.GetRenderer().get());
 }

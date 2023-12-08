@@ -30,21 +30,21 @@ class Renderer
 private:
 
 	SDLRendererPtr renderer;
-	Ref<Window> window;
+	Window* window;
 	Ref<Camera> camera;
 	ScopePtr<GUI> imGui;
 	std::unordered_map<std::string, ID> textureMap;
 	std::vector<ScopePtr<Texture>> textures;
 
-	Renderer(const Ref<Window >& window);
+	explicit Renderer(Window* window);
 protected:
 	friend class Core;
 	
-	static Ref<Renderer> Create(const Ref<Window>& window) {
-		return Ref<Renderer>(new Renderer(window));
+	static ScopePtr<Renderer> Create(Window* window) {
+		return ScopePtr<Renderer>(new Renderer(window));
 	}
 	friend class GUI;
-	Ref<Window>& GetWindow()  { return window; }
+	Window& GetWindow() const { return *window; }
 	SDLRendererPtr& GetRenderer()  { return renderer; }
 public:
 	GUI& GetGUI() { return *imGui; }

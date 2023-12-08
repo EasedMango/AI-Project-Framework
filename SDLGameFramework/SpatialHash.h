@@ -24,6 +24,7 @@ public:
 	void insert(ID entity, const Transform& pos);
 
 	std::vector<ID> query(const Transform& pos);
+	std::vector<ID> query(const Transform& pos, int radius);
 
 	void clear();
 };
