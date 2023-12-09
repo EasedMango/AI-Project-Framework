@@ -6,7 +6,6 @@ struct Behavior
 {
 	AIBehaviors::BehaviorType type;
 	float weight;
-	AIinfo info;
 };
 
 

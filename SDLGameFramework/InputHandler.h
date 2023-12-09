@@ -1,4 +1,5 @@
-﻿#include <SDL.h>
+﻿#pragma once
+#include <SDL.h>
 #include <functional>
 #include <unordered_map>
 #include <unordered_set>

@@ -18,6 +18,7 @@ public:
 	{
 		mainCamera = renderer->CreateCamera();
 		renderer->GiveCamera(mainCamera);
+		ecs = ECS::Create();
 	}
 	virtual bool OnCreate() = 0;
 	virtual void OnDestroy() = 0;

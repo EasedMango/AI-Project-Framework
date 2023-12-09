@@ -17,11 +17,11 @@ private:
 		systemManager = SystemManager();
 	}
 
-	Registry registry;
+	Registry registry;	
 	SystemManager systemManager;
 
 	protected:
-		friend class Core;
+		friend class Scene;
 		static std::unique_ptr<ECS> Create() {
 			return std::unique_ptr<ECS>(new ECS());
 		}

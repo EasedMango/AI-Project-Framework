@@ -1,11 +1,9 @@
 ﻿#pragma once
 #include <array>
-#include <glm/vec2.hpp>
-#include <glm/detail/func_matrix.inl>
-#include<glm/mat2x2.hpp>
-#include <glm/detail/func_trigonometric.inl>
+#include<glm/glm.hpp>
 
 #include "Transform.h"
+
 
 enum class ColliderShape
 {
@@ -46,7 +44,7 @@ struct Ray
 	glm::vec2 direction;
 };
 
-inline bool RayIntersectsOBB(const Ray& ray, const glm::vec2& obbCenter, const glm::vec2& obbHalfExtents, const glm::mat2& obbRotation, float& tMin) {
+inline bool RayIntersectsOBB(const Ray& ray, const glm::vec2& obbCenter, const glm::vec2& obbHalfExtents, const glm::mat2x2& obbRotation, float& tMin) {
 	// Transform ray to OBB's local space
 	glm::vec2 localOrigin = glm::inverse(obbRotation) * (ray.origin - obbCenter);
 	glm::vec2 localDirection = glm::inverse(obbRotation) * ray.direction;

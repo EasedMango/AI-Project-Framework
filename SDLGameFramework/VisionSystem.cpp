@@ -1,13 +1,12 @@
 ﻿#include "VisionSystem.h"
 
 #include <map>
-#include <glm/trigonometric.hpp>
-#include <glm/detail/func_geometric.inl>
+#include <glm/geometric.hpp>
+#include <glm/vec3.hpp>
 
 #include "Collider.h"
 #include "Player.h"
 #include "SpatialHash.h"
-#include "Transform.h"
 #include "Vision.h"
 
 void VisionSystem::OnCreate(Registry& registry)
