@@ -54,8 +54,8 @@ bool Scene2::OnCreate()
 	registry.AddComponent<Sprite>(headStickSeekAMove, renderer->CreateSprite("Care.png"));
 	registry.AddComponent<Collider>(headStickSeekAMove, ColliderShape::CircleCollider, 1);
 	registry.AddComponent<CircleCollider>(headStickSeekAMove, glm::vec2(0, 0), 0.5f);
-	registry.AddComponent<AI>(headStickSeekAMove, std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Wander, 1} });
-	registry.AddComponent<WanderInfo>(headStickSeekAMove, 10, glm::vec2(9.5f, 7.f), 1, std::vector<Tile*>(), 0);
+	//registry.AddComponent<AI>(headStickSeekAMove, std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Wander, 1} });
+	//registry.AddComponent<WanderInfo>(headStickSeekAMove, 10, glm::vec2(9.5f, 7.f), 1, std::vector<Tile*>(), 0);
 
 
 
@@ -84,17 +84,6 @@ bool Scene2::OnCreate()
 		}
 	}
 
-
-
-	registry.AddComponent<AI>(headStickSeekAMove, std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Wander, 1} });
-	registry.AddComponent<WanderInfo>(headStickSeekAMove, 10, glm::vec2(9.5f, 7.f), 1, std::vector<Tile*>(), 0);
-	////Create circle of heads
-	const auto headStickPatrolAI = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStickPatrolAI, glm::vec3(-6, 4, 0), 0);
-	registry.AddComponent<Body>(headStickPatrolAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	registry.AddComponent<Sprite>(headStickPatrolAI, renderer->CreateSprite("Head_With_A_Stick.png"));
-	registry.AddComponent<AI>(headStickPatrolAI, std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Patrol, 1} });
-	registry.AddComponent<PatrolInfo>(headStickPatrolAI, 0, glm::vec3(-6, 4, 0), glm::vec3(6, 4, 0), 0);
 
 
 	registry.CreateEntity<SpatialHash>();

@@ -38,72 +38,18 @@ struct CollisionState
 	}
 };
 
-struct Ray
-{
-	glm::vec2 origin;
-	glm::vec2 direction;
-};
-
-inline bool RayIntersectsOBB(const Ray& ray, const glm::vec2& obbCenter, const glm::vec2& obbHalfExtents, const glm::mat2x2& obbRotation, float& tMin) {
-	// Transform ray to OBB's local space
-	glm::vec2 localOrigin = glm::inverse(obbRotation) * (ray.origin - obbCenter);
-	glm::vec2 localDirection = glm::inverse(obbRotation) * ray.direction;
-
-	// AABB min and max in local space
-	glm::vec2 aabbMin = -obbHalfExtents;
-	glm::vec2 aabbMax = obbHalfExtents;
-
-	glm::vec2 tValuesMin = (aabbMin - localOrigin) / localDirection;
-	glm::vec2 tValuesMax = (aabbMax - localOrigin) / localDirection;
-
-	glm::vec2 tMinVec = glm::min(tValuesMin, tValuesMax);
-	glm::vec2 tMaxVec = glm::max(tValuesMin, tValuesMax);
-
-	tMin = glm::max(tMinVec.x, tMinVec.y);
-	float tMax = glm::min(tMaxVec.x, tMaxVec.y);
-
-	if (tMin > tMax || tMax < 0.0f) {
-		return false; // No intersection
-	}
-
-	return true;
-}
-
-inline bool RayIntersectsCircle(const Ray& ray, const glm::vec2& circleCenter, float circleRadius, float& t) {
-	glm::vec2 toCircle = circleCenter - ray.origin;
-	float tClosest = glm::dot(toCircle, ray.direction);
-	glm::vec2 closestPoint = ray.origin + tClosest * ray.direction;
-	glm::vec2 circleToRay = closestPoint - circleCenter;
-
-	float distanceSquared = glm::dot(circleToRay, circleToRay);
-	float radiusSquared = circleRadius * circleRadius;
-
-	if (distanceSquared > radiusSquared) {
-		return false; // No intersection
-	}
-
-	float tOffset = glm::sqrt(radiusSquared - distanceSquared);
-	t = tClosest - tOffset;
-
-	if (t < 0.0f) {
-		t = tClosest + tOffset;
-	}
-
-	return t >= 0.0f;
-}
-
 
 struct Collider
 {
 	ColliderShape shape;
 	unsigned int layer;
-	bool dynamic=true;
+	bool dynamic = true;
 	//CollisionState collisionState;
 };
 
 struct BoxCollider
 {
-	
+
 	float halfWidth;
 	float halfHeight;
 	float rotation;
@@ -122,6 +68,11 @@ struct CollisionResult {
 	float overlap;            // The amount of overlap between the two OBBs
 	glm::vec2 mtv;            // The Minimum Translation Vector to resolve the collision
 
+	bool operator()() const
+	{
+		return isColliding;
+	}
+
 	// Constructor for ease of use
 	CollisionResult(bool isColliding, glm::vec2 collisionNormal, float overlap, glm::vec2 mtv)
 		: isColliding(isColliding), collisionNormal(collisionNormal), overlap(overlap), mtv(mtv) {}
@@ -130,7 +81,89 @@ struct CollisionResult {
 	CollisionResult() : isColliding(false), collisionNormal(), overlap(0.0f), mtv()
 	{
 	}
+
+	CollisionResult& operator=(const bool isColliding)
+	{
+		this->isColliding = isColliding;
+		return *this;
+	}
 };
+
+struct Ray
+{
+	glm::vec2 origin;
+	glm::vec2 direction;
+	float distance = FLT_MAX;
+};
+
+inline CollisionResult RayIntersectsOBB(const Ray& ray, const glm::vec2& obbCenter, const glm::vec2& obbHalfExtents, const glm::mat2x2& obbRotation) {
+	// Transform ray to OBB's local space
+	CollisionResult cr;
+	glm::mat2x2 invRotation = glm::inverse(obbRotation);
+	const glm::vec2 localOrigin = invRotation * (ray.origin - obbCenter);
+	const glm::vec2 localDirection = invRotation * ray.direction;
+
+	const glm::vec2 aabbMin = -obbHalfExtents;
+	const glm::vec2 aabbMax = obbHalfExtents;
+
+	const glm::vec2 tValuesMin = (aabbMin - localOrigin) / localDirection;
+	const glm::vec2 tValuesMax = (aabbMax - localOrigin) / localDirection;
+
+	const glm::vec2 tMinVec = glm::min(tValuesMin, tValuesMax);
+	const glm::vec2 tMaxVec = glm::max(tValuesMin, tValuesMax);
+
+	cr.overlap = glm::max(tMinVec.x, tMinVec.y);
+	const float tMax = glm::min(tMaxVec.x, tMaxVec.y);
+
+
+
+	if (cr.overlap > tMax || tMax < 0.0f) {
+		return cr = false; // No intersection
+	}
+
+	// Determine which face is hit and set the normal
+    if (cr.overlap == tMinVec.x) {
+        cr.collisionNormal = localDirection.x < 0 ? glm::vec2(1, 0) : glm::vec2(-1, 0);
+    } else {
+        cr.collisionNormal = localDirection.y < 0 ? glm::vec2(0, 1) : glm::vec2(0, -1);
+    }
+
+	return cr = true;
+}
+
+inline CollisionResult RayIntersectsCircle(const Ray& ray, const glm::vec2& circleCenter, float circleRadius) {
+	CollisionResult cr;
+	const glm::vec2 toCircle = circleCenter - ray.origin;
+	const float tClosest = glm::dot(toCircle, ray.direction);
+	const glm::vec2 closestPoint = ray.origin + tClosest * ray.direction;
+	const glm::vec2 circleToRay = closestPoint - circleCenter;
+
+	const float distanceSquared = glm::dot(circleToRay, circleToRay);
+	const float radiusSquared = circleRadius * circleRadius;
+
+	if (distanceSquared > radiusSquared) {
+		return cr = false; // No intersection
+	}
+
+	const float tOffset = glm::sqrt(radiusSquared - distanceSquared);
+
+	cr.overlap = tClosest - tOffset;
+
+	if (cr.overlap < 0.0f) {
+		cr.overlap = tClosest + tOffset;
+	}
+	//get normal
+	auto normal = glm::normalize(closestPoint - circleCenter);
+	cr.collisionNormal = normal;
+
+	if (cr.overlap >= 0.0f)
+		return cr = true;
+
+	return cr = false; // No intersection
+
+}
+
+inline
 
 inline std::array<glm::vec2, 4> calculateOBBCorners(const Transform& transform, const BoxCollider& collider)
 {

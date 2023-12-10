@@ -139,7 +139,7 @@ public:
 	}
 
 	template<typename TComponent, typename... Args>
-	void AddComponent(ID entity, Args&&... args) {
+	TComponent& AddComponent(ID entity, Args&&... args) {
 
 		// Get the current archetype for the entity
 		std::bitset<MAX_COMPONENTS> currentArchetype = entityArchetype[entity];
@@ -160,7 +160,7 @@ public:
 		// Move the entity to the new archetype
 		MoveEntityToArchetype(entity, currentArchetype);
 
-		componentRegistry.AddComponent<TComponent>(entity, std::forward<Args>(args)...);
+		return componentRegistry.AddComponent<TComponent>(entity, std::forward<Args>(args)...);
 	}
 
 

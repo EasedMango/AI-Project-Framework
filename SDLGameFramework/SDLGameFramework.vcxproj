@@ -28,7 +28,7 @@
     <ClInclude Include="..\libs\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\libs\ImGui\imstb_truetype.h" />
     <ClInclude Include="AI.h" />
-    <ClInclude Include="AICommon.h" />
+    <ClInclude Include="AIStateMachine.h" />
     <ClInclude Include="AISystem.h" />
     <ClInclude Include="AudioSystem.h" />
     <ClInclude Include="Body.h" />

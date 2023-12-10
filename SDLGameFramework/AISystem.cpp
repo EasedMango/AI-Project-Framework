@@ -1,8 +1,10 @@
 #include "AISystem.h"
 
 #include "AI.h"
+#include "Body.h"
 #include "Player.h"
 #include "TileMap.h"
+#include "Transform.h"
 
 void AISystem::OnCreate(Registry& registry)
 {
@@ -21,29 +23,38 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 			auto& body = registry.GetComponent<Body>(entity);
 			auto& transform = registry.GetComponent<Transform>(entity);
 			auto& targetTransform = registry.GetComponent<Transform>(target);
-			for (const auto& [behavior, weight] : ai.behaviors)
-			{
-				
 
-				switch (behavior)
+
+			auto&& stateMachine = ai.stateMachine;
+			stateMachine.Check();
+			SteeringOutput temp;
+ 			for(auto& [type, info, weight] : stateMachine.GetCurrentBehaviors())
+			{
+				switch (type)
 				{
 				case AIBehaviors::BehaviorType::Seek:
-					ai.steering += weight* AIBehaviors::Seek(body, transform, targetTransform, registry.GetComponent<SeekInfo>(entity));
+				//	printf("Seeking\n");
+					ai.steering += AIBehaviors::Seek(body, transform, targetTransform, std::get<AIBehaviors::SeekInfo>(info)) *= weight;
 					break;
 				case AIBehaviors::BehaviorType::Arrive:
-					ai.steering += AIBehaviors::Arrive(body, transform, targetTransform, registry.GetComponent<ArriveInfo>(entity));
+					ai.steering += weight * AIBehaviors::Arrive(body, transform, targetTransform, std::get<AIBehaviors::ArriveInfo>(info));
 					break;
 				case AIBehaviors::BehaviorType::Chase:
-					ai.steering += AIBehaviors::Chase(body, transform, targetTransform, registry.GetComponent<ChaseInfo>(entity));
+					ai.steering += weight * AIBehaviors::Chase(body, transform, targetTransform, std::get<AIBehaviors::ChaseInfo>(info));
 					break;
 				case AIBehaviors::BehaviorType::Wander:
-					ai.steering += AIBehaviors::Wander(body, transform, TileMap::Instance().GetGrid(), registry.GetComponent<WanderInfo>(entity));
+					//printf("Wandering\n");
+					ai.steering += AIBehaviors::Wander(body, transform, TileMap::Instance().GetGrid(), std::get<AIBehaviors::WanderInfo>(info)) *= weight;
 					break;
 				case AIBehaviors::BehaviorType::Patrol:
-					ai.steering += AIBehaviors::Patrol(body, transform, targetTransform, registry.GetComponent<PatrolInfo>(entity));
+					ai.steering += weight * AIBehaviors::Patrol(body, transform, targetTransform, std::get<AIBehaviors::PatrolInfo>(info));
 					break;
 				case AIBehaviors::BehaviorType::Flee:
-					ai.steering += AIBehaviors::Flee(body, transform, targetTransform, registry.GetComponent<FleeInfo>(entity));
+					ai.steering += weight * AIBehaviors::Flee(body, transform, targetTransform, std::get<AIBehaviors::FleeInfo>(info));
+					break;
+				case AIBehaviors::BehaviorType::AvoidCollision:
+					//printf("Avoiding\n");
+					ai.steering += weight * AIBehaviors::AvoidCollision(body, transform, registry, std::get<AIBehaviors::AvoidCollisionInfo>(info));
 					break;
 				default:
 					break;

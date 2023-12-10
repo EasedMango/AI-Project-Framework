@@ -1,11 +1,79 @@
 ﻿
 #include "AIBehaviors.h"
 
+#include <map>
 #include <random>
 
 #include "SteeringOutput.h"
 #include "AI.h"
+#include "Collider.h"
+#include "SpatialHash.h"
+#include "ECS/Registry.h"
 
+
+CollisionResult GetClosestRayCollision(Ray ray, Transform originTransform, Registry& registry)
+{
+	auto& spatialHash = registry.GetComponent<SpatialHash>(registry.CreateQuery().Exact<SpatialHash>().Find()[0]);
+	CollisionResult result;
+	float tMin = FLT_MAX;
+	auto&& check = [&tMin](const float tNew)
+		{
+			if (tNew < tMin && tNew > 0)
+			{
+				tMin = tNew;
+				return true;
+			}
+			return false;
+		};
+	for (auto& entity : spatialHash.query(originTransform, ray.distance))
+	{
+		if (!registry.HasComponent<Collider>(entity))
+			continue;
+		auto& collider = registry.GetComponent<Collider>(entity);
+		if (collider.shape == ColliderShape::BoxCollider)
+		{
+			auto obb = registry.GetComponent<BoxCollider>(entity);
+			auto& obbTransform = registry.GetComponent<Transform>(entity);
+			result = RayIntersectsOBB(ray, obbTransform.pos, { obb.halfWidth,obb.halfHeight }, glm::mat2(glm::cos(obbTransform.rot), glm::sin(obbTransform.rot), -glm::sin(obbTransform.rot), glm::cos(obbTransform.rot)));
+
+			if (result() && check(result.overlap))
+			{
+				result = result;
+			}
+		}
+		else if (collider.shape == ColliderShape::CircleCollider)
+		{
+			const auto circle = registry.GetComponent<CircleCollider>(entity);
+			auto& circleTransform = registry.GetComponent<Transform>(entity);
+			result = RayIntersectsCircle(ray, circleTransform.pos, circle.radius);
+			if (result() && check(result.overlap))
+			{
+				result = result;
+			}
+		}
+	}
+	return result;
+}
+
+
+SteeringOutput AIBehaviors::AvoidCollision(const Body& characterBody, const Transform& characterTrans, Registry& registry, AvoidCollisionInfo& info)
+{
+	const auto movementDirection = glm::normalize(characterBody.vel);
+	const Ray ray = { characterTrans.pos, movementDirection, characterBody.maxSpeed * 0.5f };
+	const auto result = GetClosestRayCollision(ray, characterTrans, registry);
+	auto steering = SteeringOutput();
+
+	if (result() && result.overlap < info.distance)
+	{
+		steering.linear = glm::vec3(result.collisionNormal * characterBody.maxAcceleration, 0);
+	}
+	else
+	{
+		steering.linear = glm::vec3(0.0f);
+	}
+	return steering;
+
+}
 
 SteeringOutput AIBehaviors::Seek(const Body& characterBody, const Transform& characterTrans, const Transform& target, SeekInfo& info)
 {
@@ -181,7 +249,7 @@ SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& c
 		//	randomTile = target.GetTile(dist(rng), dist(rng));
 		//	path = target.GetPath(currentTile, randomTile);
 		//}
-		if(path.empty())
+		if (path.empty())
 			return steering;
 
 		info.path = path;
@@ -200,7 +268,7 @@ SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& c
 	}
 
 	Transform targetTrans = Transform{ glm::vec3{targetTile->x,targetTile->y,0},0 };
-//	auto d = ArriveInfo{ info.speed,characterBody.maxAcceleration,0.1f,0.5f,0.1f };
+	//	auto d = ArriveInfo{ info.speed,characterBody.maxAcceleration,0.1f,0.5f,0.1f };
 	auto d = SeekInfo{ 0,1.f };
 	return Seek(characterBody, characterTrans, targetTrans, d);
 }

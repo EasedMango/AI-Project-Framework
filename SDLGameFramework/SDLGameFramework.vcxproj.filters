@@ -229,7 +229,7 @@
     <ClInclude Include="Vision.h">
       <Filter>Framework\Components</Filter>
     </ClInclude>
-    <ClInclude Include="AICommon.h">
+    <ClInclude Include="AIStateMachine.h">
       <Filter>Framework\AI</Filter>
     </ClInclude>
   </ItemGroup>
