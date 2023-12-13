@@ -29,6 +29,6 @@ int main(int argc, char* argv[])
 
 		core->Run();
 	}
-//	MemoryManager::CleanUp();
+	//MemoryManager::CleanUp();
 	return 0;
 }

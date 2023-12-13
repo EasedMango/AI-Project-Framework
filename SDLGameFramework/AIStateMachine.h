@@ -6,6 +6,7 @@ struct Behavior
 	AIBehaviors::BehaviorType type;
 	AIBehaviors::BehaviorInfo info;
 	float weight;
+	AIBehaviors::BehaviorInfo infoOG;
 };
 struct VariableContainer {
 	std::unordered_map<std::string, float> floatVars;
@@ -57,10 +58,11 @@ struct BehaviorStateMachine
 		}
 		void AddBehavior(const AIBehaviors::BehaviorType type, const AIBehaviors::BehaviorInfo& info, const float weight = 1.0f)
 		{
-			behaviors.emplace_back(Behavior{ type,  info ,weight });
+			behaviors.emplace_back(Behavior{ type,  info ,weight,info });
 		}
-		void AddBehavior(const Behavior& behavior)
+		void AddBehavior(Behavior& behavior)
 		{
+			behavior.infoOG = behavior.info;
 			behaviors.emplace_back(behavior);
 		}
 		State(const Behavior& behavior, ID id) : id(id)
@@ -106,6 +108,9 @@ public:
 		}
 	}
 	void TransitionTo(ID nextState) {
+		for (auto& behavior : states[currentState].behaviors) {
+			behavior.info = behavior.infoOG;
+		}
 		currentState = nextState;
 	}
 

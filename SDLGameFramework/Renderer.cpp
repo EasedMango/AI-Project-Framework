@@ -2,9 +2,11 @@
 
 #include <SDL_image.h>
 
+#include "AI.h"
+#include "AI.h"
 #include "GUI.h"
 #include "Window.h"
-#include "glm/vec3.hpp"
+#include "glm/vec2.hpp"
 
 
 Renderer::Renderer(Window* window) : window(window)
@@ -32,7 +34,7 @@ void Renderer::EndFrame() const
 	SDL_RenderPresent(renderer.get());
 }
 
-Sprite Renderer::CreateSprite(const std::string& filename, int scale,glm::vec4 colour)
+Sprite Renderer::CreateSprite(const std::string& filename,int priority, int scale,glm::vec4 colour)
 {
 	auto it = textureMap.find(filename);
 	ID textureID;
@@ -64,19 +66,19 @@ Sprite Renderer::CreateSprite(const std::string& filename, int scale,glm::vec4 c
 		textureMap[filename] = textureID;
 	}
 
-	return Sprite{ textureID, scale,colour,width,height };
+	return Sprite{ textureID, scale,colour,width,height ,priority};
 }
 
-void Renderer::RenderSprite(Sprite sprite, const glm::vec3& position, const float& angle ) const
+void Renderer::RenderSprite(Sprite sprite, const glm::vec2& position, const float& angle ) const
 {
 	auto& texture = textures[sprite.textureID];
 	// convert the position from game coords to screen coords
 	SDL_Rect square;
-	glm::vec3 screenCoords;
+	glm::vec2 screenCoords;
 	float    w, h;
 
 	// convert the position from game coords to screen coords
-	screenCoords = camera->GetProjectionMatrix() * camera->GetViewMatrix() * glm::vec4(position,1.f);
+	screenCoords = camera->GetProjectionMatrix() * camera->GetViewMatrix() * glm::vec4(position,0.f,1.f);
 
 
 	w = (texture->width * sprite.scale);
@@ -102,14 +104,14 @@ void Renderer::RenderGrid()
 
 }
 
-void Renderer::RenderColoredRect(const glm::vec3& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color=glm::vec4(255,255,255, 255)) const
+void Renderer::RenderColoredRect(const glm::vec2& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color=glm::vec4(255,255,255, 255)) const
 {
 	SDL_Rect rect;
-	glm::vec3 screenCoords;
+	glm::vec2 screenCoords;
 	float w, h;
 
 	// Convert the position from game coords to screen coords
-	screenCoords = camera->GetProjectionMatrix() * glm::vec4(position, 1.f);
+	screenCoords = camera->GetProjectionMatrix() * glm::vec4(position,0.f,1.f);
 	w = dimensions.x;
 	h = dimensions.y;
 

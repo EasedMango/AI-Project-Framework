@@ -24,7 +24,8 @@ namespace AIBehaviors {
 		Patrol,
 		Wander,
 		Flee,
-		AvoidCollision
+		AvoidCollision,
+
 	};
 
 	struct SeekInfo
@@ -36,6 +37,7 @@ namespace AIBehaviors {
 	struct AvoidCollisionInfo
 	{
 		float distance;
+		bool hasTarget;
 	};
 
 	struct ArriveInfo
@@ -73,8 +75,8 @@ namespace AIBehaviors {
 	struct PatrolInfo
 	{
 		ID target;
-		glm::vec3 patrolPointA;
-		glm::vec3 patrolPointB;
+		glm::vec2 patrolPointA;
+		glm::vec2 patrolPointB;
 		bool AtpointA;
 	};
 	using BehaviorInfo = std::variant<SeekInfo, ArriveInfo, ChaseInfo, FleeInfo, WanderInfo, PatrolInfo,AvoidCollisionInfo>;
@@ -85,7 +87,7 @@ namespace AIBehaviors {
 		float weight;
 	};
 
-	SteeringOutput AvoidCollision(const Body& characterBody, const Transform& characterTrans, Registry& registry, AvoidCollisionInfo& info);
+	SteeringOutput AvoidCollision(ID id, const Body& characterBody, const Transform& characterTrans, Registry& registry, AvoidCollisionInfo& info);
 
 	SteeringOutput Seek(const Body& characterBody, const Transform& characterTrans, const Transform& target, SeekInfo& info);
 

@@ -28,7 +28,7 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 			auto&& stateMachine = ai.stateMachine;
 			stateMachine.Check();
 			SteeringOutput temp;
- 			for(auto& [type, info, weight] : stateMachine.GetCurrentBehaviors())
+ 			for(auto& [type, info, weight,OG] : stateMachine.GetCurrentBehaviors())
 			{
 				switch (type)
 				{
@@ -53,8 +53,8 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 					ai.steering += weight * AIBehaviors::Flee(body, transform, targetTransform, std::get<AIBehaviors::FleeInfo>(info));
 					break;
 				case AIBehaviors::BehaviorType::AvoidCollision:
-					//printf("Avoiding\n");
-					ai.steering += weight * AIBehaviors::AvoidCollision(body, transform, registry, std::get<AIBehaviors::AvoidCollisionInfo>(info));
+				//	printf("Avoiding\n");
+					ai.steering +=  AIBehaviors::AvoidCollision(entity, body, transform, registry, std::get<AIBehaviors::AvoidCollisionInfo>(info))*= weight;
 					break;
 				default:
 					break;

@@ -382,5 +382,8 @@
     <ClCompile Include="VisionSystem.cpp">
       <Filter>Framework\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Framework\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

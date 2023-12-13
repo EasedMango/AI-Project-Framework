@@ -98,6 +98,7 @@
     <ClCompile Include="AudioSystem.cpp" />
     <ClCompile Include="BodySystem.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionMath.cpp" />
     <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="Core.cpp" />

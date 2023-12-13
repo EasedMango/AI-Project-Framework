@@ -1,12 +1,10 @@
 ﻿#include "BodySystem.h"
 
-#include <glm/detail/func_geometric.inl>
-
-
 #include "Body.h"
+#include "Collider.h"
 #include "SpatialHash.h"
-
 #include "Transform.h"
+
 
 void UpdateBody(const float& deltaTime, Body& body, Transform& transform)
 {
@@ -41,14 +39,20 @@ void BodySystem::Update(const float& deltaTime, Registry& registry)
     spatialHash.clear();
 
 
+	const auto que = registry.CreateQuery().Include<Transform>().Any<Body,Collider>().Find();
 
-	for (auto que = registry.CreateQuery().Include<Transform, Body>(); const auto & entity : que.Find()) {
-		auto& transform = registry.GetComponent<Transform>(entity);
-		auto& movement = registry.GetComponent<Body>(entity);
+for (const auto& entity :que) {
+    auto& transform = registry.GetComponent<Transform>(entity);
 
-        UpdateBody(deltaTime, movement, transform);
-		spatialHash.insert(entity, transform);
-	}
+    if (registry.HasComponent<Body>(entity)) {
+        auto& body = registry.GetComponent<Body>(entity);
+        UpdateBody(deltaTime, body, transform);
+    }
+
+    if (registry.HasComponent<Collider>(entity)) {
+        spatialHash.insert(entity, transform);
+    }
+}
 }
 
 void BodySystem::OnDestroy(Registry& registry)

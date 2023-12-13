@@ -13,6 +13,7 @@ void InputHandler::InjectHandler(EventHandler* sdlEventHandler)
 
 void InputHandler::Start()
 {
+	constexpr auto keyType = SDL_KEYDOWN;
 	sdlEventHandler->RegisterCallback(SDL_KEYDOWN, [this](const SDL_Event& e) {this->KeyDown(e); });
 	sdlEventHandler->RegisterCallback(SDL_KEYUP, [this](const SDL_Event& e) {this->KeyUp(e); });
 	sdlEventHandler->RegisterCallback(SDL_MOUSEBUTTONDOWN, [this](const SDL_Event& e) {this->MouseButtonDown(e); });

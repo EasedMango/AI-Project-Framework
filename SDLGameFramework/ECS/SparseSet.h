@@ -97,7 +97,7 @@ public:
 
     // Checks if an entity is in the set
     bool Contains(unsigned entity) const {
-        assert(entity < sparse.size() && "Entity out of bounds in sparse array");
+       // assert(entity < sparse.size() && "Entity out of bounds in sparse array");
 
         return entity < sparse.size() && sparse[entity] < size;
     }
@@ -111,7 +111,7 @@ public:
     }
 
     const T& operator[](unsigned index) const {
-        assert(index < sparse.size() && "Entity out of bounds in sparse array");
+        //assert(index < sparse.size() && "Entity out of bounds in sparse array");
         return dense[sparse[index]];
     }
 

@@ -51,10 +51,10 @@ void PlayerMovementSystem::Update(const float& deltaTime, Registry& registry)
     auto& body = registry.GetComponent<Body>(playerEntity);
 
     // Calculate desired velocity based on direction and max speed
-    glm::vec3 desiredVel = glm::vec3(moveDir, 0) * body.maxSpeed;
+    glm::vec2 desiredVel = moveDir * body.maxSpeed;
 
     // Calculate the acceleration needed to move the body to the desired velocity
-    glm::vec3 steering = desiredVel - body.vel;
+    glm::vec2 steering = desiredVel - body.vel;
 
     // Optionally limit the acceleration
     if (glm::length(steering) > body.maxAcceleration) {

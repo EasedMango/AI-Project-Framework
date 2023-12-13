@@ -64,19 +64,20 @@ bool FixedSizeQueue::empty() const
 
 void MemoryTracker::Updater()
 {
+  //  printf("TRACKING`````````````````````````````````````````\n");
     while (true) {
-
+          //  printf("TRACKING`````````````````````````````````````````\n");
         std::unique_lock<std::mutex> lock(mtx);
         //print current queue size
       //  printf("Queue size: %zu\n", actionsInstance.count);  // Updated here to work with your custom queue
         //print current map size
-     //   printf("Map size: %zu\n", allocationsInstance.count);  // Updated here to work with your custom map
+      //  printf("Map size: %zu\n", allocationsInstance.count);  // Updated here to work with your custom map
        // printf("memo1");
         cv.wait(lock, [] { return !actionsInstance.empty() || exitFlag; });  // Updated here
         if (exitFlag && actionsInstance.empty()) break;  // And here
         if(actionsInstance.empty()) printf("\nEmpty!\n");;  // Updated here to work with your custom queue)
         while (!actionsInstance.empty()) {  // And here
-           
+           //    printf("TRACKING MEMORUY`````````````````````````````````````````\n");
             AllocationAction action;
             actionsInstance.pop(action);  // Updated here to work with your custom queue
            // printf("action : ");
@@ -149,7 +150,7 @@ void MemoryTracker::DebugMemoryInfo()
             printf("Address: %p, Size: %zu bytes\n", address, info.size);
         }
     }
-    _CrtDumpMemoryLeaks();
+   // _CrtDumpMemoryLeaks();
     printf("\n");
 }
 

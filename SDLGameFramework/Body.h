@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 
 struct Body
 {
-    glm::vec3 vel;
-    glm::vec3 accel;
+    glm::vec2 vel;
+    glm::vec2 accel;
     float mass=1;
     float orientation;		// facing this direction
     float rotation;			// rotating at this speed (radians per second?)

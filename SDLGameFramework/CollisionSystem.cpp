@@ -5,8 +5,7 @@
 #include "SpatialHash.h"
 #include <array>
 
-
-
+#include "Transform.h"
 
 
 void CircleCircleCollision(Registry& registry, ID entity1, ID entity2, float deltaTime) {
@@ -27,12 +26,12 @@ void CircleCircleCollision(Registry& registry, ID entity1, ID entity2, float del
 	if (collider1.dynamic) {
 		constexpr float movePercentage = 0.5f;
 		const glm::vec2 moveAmount = result.mtv * movePercentage;
-		transform1.pos += glm::vec3(moveAmount * separationFactor, 0.f);
+		transform1.pos += (moveAmount * separationFactor);
 	}
 	if (collider2.dynamic) {
 		constexpr float movePercentage = 0.5f;
 		const glm::vec2 moveAmount = result.mtv * movePercentage;
-		transform2.pos -= glm::vec3(moveAmount * separationFactor, 0.f);
+		transform2.pos -= (moveAmount * separationFactor);
 
 	}
 }
@@ -66,12 +65,12 @@ void BoxBoxCollision(Registry& registry, ID entity1, ID entity2, const float& de
 	if (collider1.dynamic) {
 		constexpr float movePercentage = 0.5f;
 		const glm::vec2 moveAmount = result.mtv * movePercentage;
-		transform1.pos -= glm::vec3(moveAmount * separationFactor, 0.f);
+		transform1.pos -= (moveAmount * separationFactor);
 	}
 	if (collider2.dynamic) {
 		constexpr float movePercentage = 0.5f;
 		const glm::vec2 moveAmount = result.mtv * movePercentage;
-		transform2.pos += glm::vec3(moveAmount * separationFactor, 0.f);
+		transform2.pos += (moveAmount * separationFactor);
 
 	}
 }
@@ -97,12 +96,12 @@ void CircleOBBCollision(Registry& registry, ID entity1, ID entity2, const float&
 	if (collider1.dynamic) {
 		constexpr float movePercentage = 0.5f;
 		const glm::vec2 moveAmount = result.mtv * movePercentage;
-		transform1.pos += glm::vec3(moveAmount * separationFactor, 0.f);
+		transform1.pos += (moveAmount * separationFactor);
 	}
 	if (collider2.dynamic) {
 		constexpr float movePercentage = 0.5f;
 		const glm::vec2 moveAmount = result.mtv * movePercentage;
-		transform2.pos -= glm::vec3(moveAmount * separationFactor, 0.f);
+		transform2.pos -= (moveAmount * separationFactor);
 
 	}
 }
@@ -110,10 +109,11 @@ void CircleOBBCollision(Registry& registry, ID entity1, ID entity2, const float&
 void CollisionSystem::CheckCollision(Registry& registry, const ID& entity1, const ID& entity2, const float& deltaTime)
 {
 
-	static auto&& spatialHash = registry.GetComponent<SpatialHash>(registry.CreateQuery().Include<SpatialHash>().Find()[0]);
-
 	const auto& collider1 = registry.GetComponent<Collider>(entity1);
 	const auto& collider2 = registry.GetComponent<Collider>(entity2);
+
+	if (collider1.dynamic == false && collider2.dynamic == false)
+		return;
 
 	switch (collider1.shape)
 	{

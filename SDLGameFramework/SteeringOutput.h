@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 
 struct SteeringOutput
 {
-	glm::vec3 linear = {};
+	glm::vec2 linear = {};
 	float angular = 0;
 	inline const SteeringOutput operator + (const SteeringOutput& v) const {
 		return SteeringOutput(linear + v.linear, angular + v.angular);
@@ -32,7 +32,7 @@ struct SteeringOutput
 
 	void Print() const
 	{
-				std::cout << "Linear: " << linear.x << ", " << linear.y << ", " << linear.z << std::endl;
+				std::cout << "Linear: " << linear.x << ", " << linear.y  << std::endl;
 		std::cout << "Angular: " << angular << std::endl;
 	}
 

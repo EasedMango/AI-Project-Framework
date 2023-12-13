@@ -21,6 +21,7 @@ struct Sprite
 	int scale;
 	glm::vec4 colour = { 255,255,255,255 };
 	int width, height;
+	int priority = 0;
 };
 
 
@@ -67,18 +68,18 @@ public:
 
 	void EndFrame() const;
 
-	Sprite CreateSprite(const std::string& filename, int scale = 1,glm::vec4 colour={255,255,255,255});
+	Sprite CreateSprite(const ::std::string& filename, int priority, int scale = 1, glm::vec4 colour = {255, 255, 255, 255});
 
 
 	/*
 	 Render a sprite at a given position and angle
 	 z value of position is used to determine render order (higher z values are rendered last)
 	 */
-	void RenderSprite(Sprite sprite, const glm::vec3& position, const  float& angle) const;
+	void RenderSprite(Sprite sprite, const glm::vec2& position, const  float& angle) const;
 
 	void RenderGrid();
 
-	void RenderColoredRect(const glm::vec3& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color) const;
+	void RenderColoredRect(const glm::vec2& position, const glm::vec2& dimensions, const float& angle, const glm::vec4& color) const;
 
 
 };

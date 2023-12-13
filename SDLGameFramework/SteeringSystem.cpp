@@ -30,7 +30,7 @@ void SteeringSystem::Update(const float& deltaTime, Registry& registry)
 			body.vel = glm::normalize(body.vel) * body.maxSpeed;
 		}
 
-		// Assuming you have a glm::vec3 position to update
+		// Assuming you have a glm::vec2 position to update
 		// position += body.vel * deltaTime;
 
 		// Update orientation using rotation and time

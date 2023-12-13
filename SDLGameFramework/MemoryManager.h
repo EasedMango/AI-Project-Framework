@@ -30,6 +30,12 @@ class MemoryManager
 	}
 	inline static bool clean = false;
 	inline static int newAndDeleteInFrameNum = 0;
+	static MemoryTracker& GetMemoryTracker()
+	{
+				static MemoryTracker memoryTracker = MemoryTracker();
+		return memoryTracker;
+	}
+
 
 public:
 	MemoryManager() = delete;
@@ -41,9 +47,7 @@ public:
 
 		void* buffer = calloc(bufferSize, 1);
 		FreeList(buffer, PTR(buffer) + bufferSize, bufferSize);
-
-		//MemoryTracker();
-
+		GetMemoryTracker();
 	};
 
 	~MemoryManager()
@@ -53,11 +57,14 @@ public:
 
 	static void CleanUp()
 	{
+		printf("Cleaning Memory\n");
 		if (!clean)
 		{
 			clean = true;
 			FreeList().CleanUp();
+			
 		}
+		//MemoryTracker::DebugMemoryInfo();
 		//	GetFreeList()->CleanUp();
 	};
 
@@ -70,8 +77,8 @@ public:
 	static void* Allocate(size_t numBytes, size_t alignment = alignof(std::max_align_t))
 	{
 		//TIMING("Allocate");
-		auto ptr = malloc(numBytes);
-		//auto ptr = FreeList().Alloc(numBytes, alignment);//malloc(numBytes);//Blocks().Allocate(numBytes);
+		//auto ptr = malloc(numBytes);
+		auto ptr = FreeList().Alloc(numBytes, alignment);//malloc(numBytes);//Blocks().Allocate(numBytes);
 		if (ptr == nullptr)
 		{
 			std::cout << "Failed to allocate memory" << std::endl;
@@ -97,8 +104,8 @@ public:
 		}
 
 		MemoryTracker::UpdateMemoryTracker(false, memoryLocation, numBytes);
-		free(memoryLocation);
-		//	FreeList().Dealloc(memoryLocation);//free(memoryLocation);//Blocks().Free(memoryLocation);
-			//Blocks().Free(memoryLocation);
+		//free(memoryLocation);
+		FreeList().Dealloc(memoryLocation);//free(memoryLocation);//Blocks().Free(memoryLocation);
+		//Blocks().Free(memoryLocation);
 	};
 };
