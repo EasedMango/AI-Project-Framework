@@ -16,6 +16,7 @@
 #include "Timing.h"
 #include "ECS/ECS.h"
 #include "SystemsLocator.h"
+
 Core::Core(): fps(0), isRunning(false)
 {
 	Debug::Info("Starting Core");
@@ -105,6 +106,8 @@ bool Core::Initialize(const char* name_, int width_, int height_)
 		pause = !pause;
 		std::cout << "Pause: " << std::boolalpha << pause << std::endl;
 		});
+
+	
 	return true;
 }
 

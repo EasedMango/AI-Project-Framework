@@ -47,19 +47,19 @@ bool TestScene::OnCreate(ECS& ecs)
 	registry.AddComponent<Collider>(headStick, ColliderShape::CircleCollider, 1);
 	registry.AddComponent<CircleCollider>(headStick, glm::vec2(0, 0), 0.5f);
 
-	const auto headStickSeekAMove = registry.CreateEntity();
-	registry.AddComponent<Transform>(headStickSeekAMove, glm::vec3(4, 4, 0));
-	auto& transform2 = registry.GetComponent<Transform>(headStickSeekAMove);
-	registry.AddComponent<Body>(headStickSeekAMove, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	registry.AddComponent<Sprite>(headStickSeekAMove, renderer.CreateSprite("Care.png"));
-	registry.AddComponent<Collider>(headStickSeekAMove, ColliderShape::CircleCollider, 1);
-	registry.AddComponent<CircleCollider>(headStickSeekAMove, glm::vec2(0, 0), 0.5f);
-	registry.AddComponent<AI>(headStickSeekAMove,  std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Wander,1} });
-	registry.AddComponent<WanderInfo>(headStickSeekAMove, 10, glm::vec2(9.5f, 7.f), 1, std::vector<Tile*>(), 0);
+	//const auto headStickSeekAMove = registry.CreateEntity();
+	//registry.AddComponent<Transform>(headStickSeekAMove, glm::vec3(4, 4, 0));
+	//auto& transform2 = registry.GetComponent<Transform>(headStickSeekAMove);
+	//registry.AddComponent<Body>(headStickSeekAMove, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	//registry.AddComponent<Sprite>(headStickSeekAMove, renderer.CreateSprite("Care.png"));
+	//registry.AddComponent<Collider>(headStickSeekAMove, ColliderShape::CircleCollider, 1);
+	//registry.AddComponent<CircleCollider>(headStickSeekAMove, glm::vec2(0, 0), 0.5f);
+	//registry.AddComponent<AI>(headStickSeekAMove,  std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Wander,1} });
+	//registry.AddComponent<WanderInfo>(headStickSeekAMove, 10, glm::vec2(9.5f, 7.f), 1, std::vector<Tile*>(), 0);
 
-
-
-
+	const auto Start = registry.CreateEntity();
+	registry.AddComponent<Transform>(Start, glm::vec3(4.0f, 3.6f,0.0));
+	registry.AddComponent<Sprite>(Start, renderer.CreateSprite("Buttons.png"));
 
 
 
@@ -116,14 +116,14 @@ bool TestScene::OnCreate(ECS& ecs)
 
 
 	////Create circle of heads
-	//const auto headStickPatrolAI = registry.CreateEntity();
-	//registry.AddComponent<Transform>(headStickPatrolAI, glm::vec3(-6, 4, 0), 0);
-	//registry.AddComponent<Body>(headStickPatrolAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	//registry.AddComponent<Sprite>(headStickPatrolAI, renderer.CreateSprite("Head_With_A_Stick.png"));
-	//registry.AddComponent<AI>(headStickPatrolAI, AIBehaviors::BehaviorType::Patrol, headStick, SteeringOutput());
-	//registry.AddComponent<PatrolInfo>(headStickPatrolAI, glm::vec3(-6, 4, 0), glm::vec3(6, 4, 0), 0);
-	//registry.AddComponent<Collider>(headStickPatrolAI, ColliderShape::BoxCollider, 1);
-	//registry.AddComponent<BoxCollider>(headStickPatrolAI, 1, 1, 0, glm::vec2(0, 0));
+	const auto headStickPatrolAI = registry.CreateEntity();
+	registry.AddComponent<Transform>(headStickPatrolAI, glm::vec3(1.5, 12, 0), 0);
+	registry.AddComponent<Body>(headStickPatrolAI, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	registry.AddComponent<Sprite>(headStickPatrolAI, renderer.CreateSprite("Head_With_A_Stick.png"));
+	registry.AddComponent<AI>(headStickPatrolAI, std::vector<WeightedBehavior>{ {AIBehaviors::BehaviorType::Patrol, 1} });
+	registry.AddComponent<PatrolInfo>(headStickPatrolAI,0.0f, glm::vec3(-6, 4, 0), glm::vec3(6, 4, 0), 0);
+	registry.AddComponent<Collider>(headStickPatrolAI, ColliderShape::BoxCollider, 1);
+	registry.AddComponent<BoxCollider>(headStickPatrolAI, 0.5, 0.5, 0, glm::vec2(0, 0));
 
 		//create start button
 	//const auto startButton = registry.CreateEntity<UIElement>();

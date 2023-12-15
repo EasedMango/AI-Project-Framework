@@ -99,10 +99,10 @@ SteeringOutput AIBehaviors::Arrive(const Body& characterBody, const Transform& c
 
 	if (distance > info.slowRadius)
 	{
-		targetSpeed = characterBody.maxSpeed;
+		targetSpeed = info.maxSpeed;
 	}
 	else
-		targetSpeed = characterBody.maxSpeed * distance / info.slowRadius;
+		targetSpeed = info.maxSpeed * distance / info.slowRadius;
 
 	auto targetVelocity = glm::normalize(direction) * targetSpeed;
 	result.linear = (targetVelocity - characterBody.vel) / info.timeToTarget;
@@ -124,17 +124,17 @@ SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& c
 	float distance = glm::length(direction);
 
 
-	SeekInfo si = SeekInfo(1.0f);
+	ArriveInfo Ai = ArriveInfo(0.0f,1.0f,50.0f,2.5f,5.0f,1.0f);
 
 	if (distance < 2) {
 
-		return Seek(characterBody, characterTrans, target, si);
+		return Arrive(characterBody, characterTrans, target, Ai);
 	}
 
 
 	//sets patrol point
-	info.patrolPointA = glm::vec3(-6.0f, 4.0f, 0.0f);
-	info.patrolPointB = glm::vec3(6.0f, 4.0f, 0.0f);
+	info.patrolPointA = glm::vec3(1.5f, 12.0f, 0.0f);
+	info.patrolPointB = glm::vec3(15.0f, 12.0f, 0.0f);
 
 	//sets the starting posistion to be one of the points
 	glm::vec3 currentPosition;
