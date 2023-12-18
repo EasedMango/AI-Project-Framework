@@ -52,7 +52,7 @@ bool TestScene::OnCreate()
 
 	{
 		aiID = registry.CreateEntity();
-		registry.AddComponent<Transform>(aiID, glm::vec2(4, 4));
+		registry.AddComponent<Transform>(aiID, glm::vec2(3, 4));
 		registry.AddComponent<Body>(aiID, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
 		registry.AddComponent<Sprite>(aiID, renderer->CreateSprite("Care.png", 1));
 		registry.AddComponent<Collider>(aiID, ColliderShape::CircleCollider, 1);
@@ -89,9 +89,9 @@ bool TestScene::OnCreate()
 
 	{
 		aiID2 = registry.CreateEntity();
-		registry.AddComponent<Transform>(aiID2, glm::vec2(4, 4));
+		registry.AddComponent<Transform>(aiID2, glm::vec2(5, 4));
 		registry.AddComponent<Body>(aiID2, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-		registry.AddComponent<Sprite>(aiID2, renderer->CreateSprite("Care.png", 1));
+		registry.AddComponent<Sprite>(aiID2, renderer->CreateSprite("Bride.png", 1));
 		registry.AddComponent<Collider>(aiID2, ColliderShape::CircleCollider, 1);
 		registry.AddComponent<CircleCollider>(aiID2, glm::vec2(0, 0), 0.5f);
 		registry.AddComponent<Vision>(aiID2, playerID, 5.f, 0.5f);
@@ -105,7 +105,7 @@ bool TestScene::OnCreate()
 
 				if (change)
 				{
-					printf("Player Visible\n");
+					printf("Player Is Scary\n");
 				}
 
 
@@ -117,7 +117,7 @@ bool TestScene::OnCreate()
 
 				if (change)
 				{
-					printf("Player Not Visible\n");
+					printf("Player Is Not Scary\n");
 				}
 
 				return change;
