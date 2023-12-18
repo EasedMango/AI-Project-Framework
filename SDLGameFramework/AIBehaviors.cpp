@@ -15,65 +15,66 @@
 
 
 CollisionResult GetClosestRayCollision(Ray ray, ID entityOrigin, Transform originTransform, Registry& registry) {
-    auto& spatialHash = registry.GetComponent<SpatialHash>(registry.CreateQuery().Exact<SpatialHash>().Find()[0]);
-    CollisionResult closestResult;
-    closestResult = false;  // Assuming CollisionResult has a boolean 'intersection'
-    float closestDistance = FLT_MAX;
+	auto& spatialHash = registry.GetComponent<SpatialHash>(registry.CreateQuery().Exact<SpatialHash>().Find()[0]);
+	CollisionResult closestResult;
+	closestResult = false;  // Assuming CollisionResult has a boolean 'intersection'
+	float closestDistance = FLT_MAX;
 
-    for (auto& entity : spatialHash.query(originTransform,2)) {
-        if (entity == entityOrigin) continue;
+	for (auto& entity : spatialHash.query(originTransform, 2)) {
+		if (entity == entityOrigin) continue;
 
-        auto& collider = registry.GetComponent<Collider>(entity);
-        CollisionResult result;
+		auto& collider = registry.GetComponent<Collider>(entity);
+		CollisionResult result;
 
-        if (collider.shape == ColliderShape::BoxCollider) {
-            auto obb = registry.GetComponent<BoxCollider>(entity);
-            auto& obbTransform = registry.GetComponent<Transform>(entity);
-            result = RayIntersectsOBB(ray, obbTransform.pos, { obb.halfWidth, obb.halfHeight }, glm::mat2(glm::cos(obbTransform.rot), glm::sin(obbTransform.rot), -glm::sin(obbTransform.rot), glm::cos(obbTransform.rot)));
-        } else if (collider.shape == ColliderShape::CircleCollider) {
-            const auto circle = registry.GetComponent<CircleCollider>(entity);
-            auto& circleTransform = registry.GetComponent<Transform>(entity);
-            result = RayIntersectsCircle(ray, circleTransform.pos, circle.radius);
-        }
+		if (collider.shape == ColliderShape::BoxCollider) {
+			auto obb = registry.GetComponent<BoxCollider>(entity);
+			auto& obbTransform = registry.GetComponent<Transform>(entity);
+			result = RayIntersectsOBB(ray, obbTransform.pos, { obb.halfWidth, obb.halfHeight }, glm::mat2(glm::cos(obbTransform.rot), glm::sin(obbTransform.rot), -glm::sin(obbTransform.rot), glm::cos(obbTransform.rot)));
+		}
+		else if (collider.shape == ColliderShape::CircleCollider) {
+			const auto circle = registry.GetComponent<CircleCollider>(entity);
+			auto& circleTransform = registry.GetComponent<Transform>(entity);
+			result = RayIntersectsCircle(ray, circleTransform.pos, circle.radius);
+		}
 
-        if (result() && result.overlap < closestDistance && result.overlap >= 0.f) {
-            closestDistance = result.overlap;
-            closestResult = result;
-        }
-    }
+		if (result() && result.overlap < closestDistance && result.overlap >= 0.f) {
+			closestDistance = result.overlap;
+			closestResult = result;
+		}
+	}
 
-    return closestResult;
+	return closestResult;
 }
 
 
 
 
 SteeringOutput AIBehaviors::AvoidCollision(ID id, const Body& characterBody, const Transform& characterTrans, Registry& registry, AvoidCollisionInfo& info) {
-    // Check if the character is effectively stationary
-    if (glm::length(characterBody.vel) < FLT_EPSILON) {
-        return SteeringOutput{}; // No movement, no need to steer
-    }
+	// Check if the character is effectively stationary
+	if (glm::length(characterBody.vel) < FLT_EPSILON) {
+		return SteeringOutput{}; // No movement, no need to steer
+	}
 
-    // Create a ray for collision detection
-    glm::vec2 normalizedVelocity = glm::normalize(characterBody.vel);
-    const Ray ray = { characterTrans.pos, normalizedVelocity, characterBody.maxAcceleration/2.f };
+	// Create a ray for collision detection
+	glm::vec2 normalizedVelocity = glm::normalize(characterBody.vel);
+	const Ray ray = { characterTrans.pos, normalizedVelocity, characterBody.maxAcceleration / 2.f };
 
-    // Get the closest collision result
-    const auto result = GetClosestRayCollision(ray, id, characterTrans, registry);
+	// Get the closest collision result
+	const auto result = GetClosestRayCollision(ray, id, characterTrans, registry);
 
-    SteeringOutput steering;
-    steering.linear = glm::vec2(0.0f);
+	SteeringOutput steering;
+	steering.linear = glm::vec2(0.0f);
 
-    // Check if a valid collision occurred and is within avoidance distance
-    if (result.Valid() && result() && result.overlap < info.distance) {
-        // Calculate avoidance direction, perpendicular to the wall normal
-        glm::vec2 avoidanceDirection = glm::vec2(result.collisionNormal.y, -result.collisionNormal.x);
+	// Check if a valid collision occurred and is within avoidance distance
+	if (result.Valid() && result() && result.overlap < info.distance) {
+		// Calculate avoidance direction, perpendicular to the wall normal
+		glm::vec2 avoidanceDirection = glm::vec2(result.collisionNormal.y, -result.collisionNormal.x);
 
-        // Apply steering force
-        steering.linear = avoidanceDirection * (characterBody.maxAcceleration );
-    }
+		// Apply steering force
+		steering.linear = avoidanceDirection * (characterBody.maxAcceleration);
+	}
 
-    return steering;
+	return steering;
 }
 
 
@@ -84,9 +85,8 @@ SteeringOutput AIBehaviors::AvoidCollision(ID id, const Body& characterBody, con
 
 SteeringOutput AIBehaviors::Seek(const Body& characterBody, const Transform& characterTrans, const Transform& target, SeekInfo& info)
 {
-	SteeringOutput steering;
+	SteeringOutput steering ={};
 	steering.angular = 0;
-
 	const glm::vec2 direction = target.pos - characterTrans.pos;
 
 	if (const float distance = glm::length(direction); distance > 0) {
@@ -102,7 +102,6 @@ SteeringOutput AIBehaviors::Seek(const Body& characterBody, const Transform& cha
 
 		// Accelerate towards the target
 		steering.linear = targetVelocity - characterBody.vel;
-
 		// Optionally limit the acceleration
 		if (glm::length(steering.linear) > characterBody.maxAcceleration) {
 			steering.linear = glm::normalize(steering.linear) * characterBody.maxAcceleration;
@@ -122,12 +121,15 @@ SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& c
 	static std::random_device random;
 	static std::mt19937 rng(random());
 	static std::uniform_int_distribution<std::mt19937::result_type> dist(0, 24);
+	//print wander info
+
+
 
 	if (info.path.empty())
 	{
 		const auto currentTile = target.GetTile(characterTrans.pos.x, characterTrans.pos.y);
 		const auto randomTile = target.GetTile(dist(rng), dist(rng));
-
+		//printf("current tile: %d, %d\n", currentTile->x, currentTile->y);
 
 		const auto path = target.GetPath(currentTile, randomTile);
 
@@ -136,28 +138,40 @@ SteeringOutput AIBehaviors::Wander(const Body& characterBody, const Transform& c
 		//	randomTile = target.GetTile(dist(rng), dist(rng));
 		//	path = target.GetPath(currentTile, randomTile);
 		//}
-		if (path.empty())
+		//printf("Pathing: %i",info.self);
+		if (path.empty()) {
+			//printf("no path found\n");
 			return steering;
+		}
 
 		info.path = path;
 		info.currentPathIndex = 0;
 	}
-	const auto targetTile = info.path[info.currentPathIndex];
-	const auto dirToNextTile = glm::vec2{ targetTile->x,targetTile->y } - characterTrans.pos;
+	auto targetTile = info.path[info.currentPathIndex];
+	const auto dirToNextTile = glm::vec2{ targetTile.x,targetTile.y } - characterTrans.pos;
 	const auto distance = glm::length(dirToNextTile);
 	if (distance < 0.5f)
 	{
+
 		info.currentPathIndex++;
 		if (info.currentPathIndex >= info.path.size())
 		{
+
 			info.path.clear();
+		}
+		else
+		{
+
 		}
 	}
 
-	const Transform targetTrans = Transform{ glm::vec2{targetTile->x,targetTile->y},0 };
+	const Transform targetTrans = Transform{ glm::vec2{targetTile.x,targetTile.y},0 };
 	//	auto d = ArriveInfo{ info.speed,characterBody.maxAcceleration,0.1f,0.5f,0.1f };
 	auto d = SeekInfo{ 0,1.f };
-	return Seek(characterBody, characterTrans, targetTrans, d);
+	auto s = Seek(characterBody, characterTrans, targetTrans, d);
+
+
+	return s;
 }
 SteeringOutput AIBehaviors::Chase(Body& characterBody, const Transform& characterTrans, const Transform& target, ChaseInfo& info)
 {
@@ -283,16 +297,22 @@ SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& c
 
 SteeringOutput AIBehaviors::Flee(Body& characterBody, const Transform& characterTrans, const Transform& target, FleeInfo& info)
 {
-	SteeringOutput steering;
-	steering.angular = 0;
+    SteeringOutput steering;
+    steering.angular = 0;
 
-	glm::vec2 direction = target.pos - characterTrans.pos;
-	float distance = glm::length(direction);
+    const glm::vec2 direction = characterTrans.pos - target.pos;
 
-	if (distance > 0) {
-		steering.linear = characterTrans.pos - target.pos;
+    // Normalize the direction and scale it by a fleeing distance
+    const glm::vec2 fleeTargetPos = characterTrans.pos + glm::normalize(direction);
 
-		steering.linear = glm::normalize(steering.linear) * characterBody.maxAcceleration;
-	}
-	return steering;
+    // Create a Transform for the flee target
+    const Transform fleeTarget = { fleeTargetPos, 0.0f };
+
+    // Use SeekInfo with maxSpeed and maxAcceleration for fleeing
+    SeekInfo seekInfo = { 0,1.f };
+
+    // Use the Seek behavior to move towards the flee target
+    return Seek(characterBody, characterTrans, fleeTarget, seekInfo);
 }
+
+

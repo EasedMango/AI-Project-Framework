@@ -67,7 +67,7 @@ namespace AIBehaviors {
 		float range;
 		glm::vec2 center;
 		float speed;
-		std::vector<Tile*> path;
+		std::vector<Tile> path;
 		int currentPathIndex;
 
 	};

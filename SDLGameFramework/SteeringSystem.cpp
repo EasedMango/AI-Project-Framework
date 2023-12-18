@@ -11,6 +11,7 @@ void SteeringSystem::Update(const float& deltaTime, Registry& registry)
 	for (auto que = registry.CreateQuery().Include<AI, Body>(); const auto & entity : que.Find()) {
 		auto& ai = registry.GetComponent<AI>(entity);
 		const auto& steering = ai.steering;
+	
 		auto& body = registry.GetComponent<Body>(entity);
 		// Apply linear acceleration
 		body.accel = steering.linear;

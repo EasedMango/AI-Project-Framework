@@ -63,7 +63,7 @@ bool TestScene::OnCreate()
 
 	auto& seekState = stateMachine.AddState({ AIBehaviors::BehaviorType::Seek, AIBehaviors::SeekInfo{playerID,3.f},3.f });
 	seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
-	auto& wanderState = stateMachine.AddState({ AIBehaviors::BehaviorType::Wander, AIBehaviors::WanderInfo{10,glm::vec2(9.5f,7.f),1,std::vector<Tile*>(),0},1.f });
+	auto& wanderState = stateMachine.AddState({ AIBehaviors::BehaviorType::Wander, AIBehaviors::WanderInfo{10,glm::vec2(9.5f,7.f),1,std::vector<Tile>(),0},1.f });
 	wanderState.AddCondition([](VariableContainer& variables)
 		{
 			const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
