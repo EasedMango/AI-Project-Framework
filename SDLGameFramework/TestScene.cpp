@@ -34,8 +34,6 @@ ID aiID2;
 
 bool TestScene::OnCreate()
 {
-
-
 	auto& registry = ecs->GetRegistry();
 
 	const auto bg = registry.CreateEntity();
@@ -52,80 +50,154 @@ bool TestScene::OnCreate()
 	registry.AddComponent<Collider>(playerID, ColliderShape::CircleCollider, 1);
 	registry.AddComponent<CircleCollider>(playerID, glm::vec2(0, 0), 0.5f);
 
-	aiID = registry.CreateEntity();
-	registry.AddComponent<Transform>(aiID, glm::vec2(4, 4));
-	registry.AddComponent<Body>(aiID, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	registry.AddComponent<Sprite>(aiID, renderer->CreateSprite("Care.png", 1));
-	registry.AddComponent<Collider>(aiID, ColliderShape::CircleCollider, 1);
-	registry.AddComponent<CircleCollider>(aiID, glm::vec2(0, 0), 0.5f);
-	registry.AddComponent<Vision>(aiID, playerID, 5.f, 0.5f);
-	auto& stateMachine = registry.AddComponent<AI>(aiID).stateMachine;
-
-	// second character to use flee state for gail
-	aiID2 = registry.CreateEntity();
-	registry.AddComponent<Transform>(aiID2, glm::vec2(4, 4));
-	registry.AddComponent<Body>(aiID2, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-	registry.AddComponent<Sprite>(aiID2, renderer->CreateSprite("Bride.png", 1));
-	registry.AddComponent<Collider>(aiID2, ColliderShape::CircleCollider, 1);
-	registry.AddComponent<CircleCollider>(aiID2, glm::vec2(0, 0), 0.5f);
-	registry.AddComponent<Vision>(aiID2, playerID, 5.f, 0.5f);
-	//auto& stateMachine = registry.AddComponent<AI>(aiID2).stateMachine;
-
-	auto& seekState = stateMachine.AddState({ AIBehaviors::BehaviorType::Seek, AIBehaviors::SeekInfo{playerID,3.f},3.f });
-	seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
-	auto& wanderState = stateMachine.AddState({ AIBehaviors::BehaviorType::Wander, AIBehaviors::WanderInfo{10,glm::vec2(9.5f,7.f),1,std::vector<Tile>(),0},1.f });
-
-	// added flee state
-	auto& fleeState = stateMachine.AddState({ AIBehaviors::BehaviorType::Flee, AIBehaviors::FleeInfo{playerID, 2.0f} });
-	fleeState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
-
-	wanderState.AddCondition([](VariableContainer& variables)
-		{
-			const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
-
-			if (change)
+	{
+		aiID = registry.CreateEntity();
+		registry.AddComponent<Transform>(aiID, glm::vec2(4, 4));
+		registry.AddComponent<Body>(aiID, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+		registry.AddComponent<Sprite>(aiID, renderer->CreateSprite("Care.png", 1));
+		registry.AddComponent<Collider>(aiID, ColliderShape::CircleCollider, 1);
+		registry.AddComponent<CircleCollider>(aiID, glm::vec2(0, 0), 0.5f);
+		registry.AddComponent<Vision>(aiID, playerID, 5.f, 0.5f);
+		auto& stateMachine = registry.AddComponent<AI>(aiID).stateMachine;
+		auto& seekState = stateMachine.AddState({ AIBehaviors::BehaviorType::Seek, AIBehaviors::SeekInfo{playerID,3.f},3.f });
+		seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
+		auto& wanderState = stateMachine.AddState({ AIBehaviors::BehaviorType::Wander, AIBehaviors::WanderInfo{10,glm::vec2(9.5f,7.f),1,std::vector<Tile>(),0},1.f });
+		wanderState.AddCondition([](VariableContainer& variables)
 			{
-				printf("Player Visible\n");
-			}
+				const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
+
+				if (change)
+				{
+					printf("Player Visible\n");
+				}
 
 
-			return change;
-		}, seekState.id);
-	seekState.AddCondition([](VariableContainer& variables)
-		{
-			const bool change = (!variables.GetBool("Visible"));
-
-			if (change)
+				return change;
+			}, seekState.id);
+		seekState.AddCondition([](VariableContainer& variables)
 			{
-				printf("Player Not Visible\n");
-			}
+				const bool change = (!variables.GetBool("Visible"));
 
-			return change;
-		}, wanderState.id);
+				if (change)
+				{
+					printf("Player Not Visible\n");
+				}
 
-	// flee condition for gail
-	wanderState.AddCondition([](VariableContainer& variables)
-		{
-			const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
+				return change;
+			}, wanderState.id);
+	}
 
-			if (change)
+	{
+		aiID2 = registry.CreateEntity();
+		registry.AddComponent<Transform>(aiID2, glm::vec2(4, 4));
+		registry.AddComponent<Body>(aiID2, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+		registry.AddComponent<Sprite>(aiID2, renderer->CreateSprite("Care.png", 1));
+		registry.AddComponent<Collider>(aiID2, ColliderShape::CircleCollider, 1);
+		registry.AddComponent<CircleCollider>(aiID2, glm::vec2(0, 0), 0.5f);
+		registry.AddComponent<Vision>(aiID2, playerID, 5.f, 0.5f);
+		auto& stateMachine = registry.AddComponent<AI>(aiID2).stateMachine;
+		auto& fleeState = stateMachine.AddState({ AIBehaviors::BehaviorType::Flee, AIBehaviors::FleeInfo{playerID,3.f},3.f });
+		fleeState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
+		auto& wanderState = stateMachine.AddState({ AIBehaviors::BehaviorType::Wander, AIBehaviors::WanderInfo{10,glm::vec2(9.5f,7.f),1,std::vector<Tile>(),0},1.f });
+		wanderState.AddCondition([](VariableContainer& variables)
 			{
-				printf("Player Isn't Scary\n");
-			}
+				const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
+
+				if (change)
+				{
+					printf("Player Visible\n");
+				}
 
 
-			return change;
-		}, fleeState.id);
-	fleeState.AddCondition([](VariableContainer& variables)
-		{
-			const bool change = (variables.GetBool("Visible")) && (variables.GetBool("Distance") < 3.0f);
+				return change;
+			}, fleeState.id);
+		fleeState.AddCondition([](VariableContainer& variables)
+			{
+				const bool change = (!variables.GetBool("Visible"));
 
-			if (change) {
-				printf("Player Is Scary\n");
-			}
+				if (change)
+				{
+					printf("Player Not Visible\n");
+				}
 
-			return change;
-		}, wanderState.id);
+				return change;
+			}, wanderState.id);
+	}
+
+	//aiID = registry.CreateEntity();
+	//registry.AddComponent<Transform>(aiID, glm::vec2(4, 4));
+	//registry.AddComponent<Body>(aiID, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	//registry.AddComponent<Sprite>(aiID, renderer->CreateSprite("Care.png", 1));
+	//registry.AddComponent<Collider>(aiID, ColliderShape::CircleCollider, 1);
+	//registry.AddComponent<CircleCollider>(aiID, glm::vec2(0, 0), 0.5f);
+	//registry.AddComponent<Vision>(aiID, playerID, 5.f, 0.5f);
+	//auto& stateMachine = registry.AddComponent<AI>(aiID).stateMachine;
+
+	//// second character to use flee state for gail
+	//aiID2 = registry.CreateEntity();
+	//registry.AddComponent<Transform>(aiID2, glm::vec2(4, 4));
+	//registry.AddComponent<Body>(aiID2, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+	//registry.AddComponent<Sprite>(aiID2, renderer->CreateSprite("Bride.png", 1));
+	//registry.AddComponent<Collider>(aiID2, ColliderShape::CircleCollider, 1);
+	//registry.AddComponent<CircleCollider>(aiID2, glm::vec2(0, 0), 0.5f);
+	//registry.AddComponent<Vision>(aiID2, playerID, 5.f, 0.5f);
+	////auto& stateMachine = registry.AddComponent<AI>(aiID2).stateMachine;
+
+	//auto& seekState = stateMachine.AddState({ AIBehaviors::BehaviorType::Seek, AIBehaviors::SeekInfo{playerID,3.f},3.f });
+	//seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
+	//auto& wanderState = stateMachine.AddState({ AIBehaviors::BehaviorType::Wander, AIBehaviors::WanderInfo{10,glm::vec2(9.5f,7.f),1,std::vector<Tile>(),0},1.f });
+
+	//// added flee state
+	//auto& fleeState = stateMachine.AddState({ AIBehaviors::BehaviorType::Flee, AIBehaviors::FleeInfo{playerID, 2.0f} });
+	//fleeState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
+
+	//wanderState.AddCondition([](VariableContainer& variables)
+	//	{
+	//		const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
+
+	//		if (change)
+	//		{
+	//			printf("Player Visible\n");
+	//		}
+
+
+	//		return change;
+	//	}, seekState.id);
+	//seekState.AddCondition([](VariableContainer& variables)
+	//	{
+	//		const bool change = (!variables.GetBool("Visible"));
+
+	//		if (change)
+	//		{
+	//			printf("Player Not Visible\n");
+	//		}
+
+	//		return change;
+	//	}, wanderState.id);
+
+	//// flee condition for gail
+	//wanderState.AddCondition([](VariableContainer& variables)
+	//	{
+	//		const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
+
+	//		if (change)
+	//		{
+	//			printf("Player Isn't Scary\n");
+	//		}
+
+
+	//		return change;
+	//	}, fleeState.id);
+	//fleeState.AddCondition([](VariableContainer& variables)
+	//	{
+	//		const bool change = (variables.GetBool("Visible")) && (variables.GetBool("Distance") < 3.0f);
+
+	//		if (change) {
+	//			printf("Player Is Scary\n");
+	//		}
+
+	//		return change;
+	//	}, wanderState.id);
 
 
 
