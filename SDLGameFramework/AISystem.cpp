@@ -28,8 +28,10 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 			auto&& stateMachine = ai.stateMachine;
 			stateMachine.Check();
 			SteeringOutput temp;
+			//printf("Entity: %i ",entity);
  			for(auto& [type, info, weight,OG] : stateMachine.GetCurrentBehaviors())
 			{
+			//	printf(" Behavior: %i ", type);
 				switch (type)
 				{
 				case AIBehaviors::BehaviorType::Seek:
@@ -37,20 +39,20 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 					ai.steering += AIBehaviors::Seek(body, transform, targetTransform, std::get<AIBehaviors::SeekInfo>(info)) *= weight;
 					break;
 				case AIBehaviors::BehaviorType::Arrive:
-					ai.steering += weight * AIBehaviors::Arrive(body, transform, targetTransform, std::get<AIBehaviors::ArriveInfo>(info));
+					ai.steering +=  AIBehaviors::Arrive(body, transform, targetTransform, std::get<AIBehaviors::ArriveInfo>(info))*= weight;
 					break;
 				case AIBehaviors::BehaviorType::Chase:
-					ai.steering += weight * AIBehaviors::Chase(body, transform, targetTransform, std::get<AIBehaviors::ChaseInfo>(info));
+					ai.steering +=  AIBehaviors::Chase(body, transform, targetTransform, std::get<AIBehaviors::ChaseInfo>(info))*= weight;
 					break;
 				case AIBehaviors::BehaviorType::Wander:
 					//printf("Wandering\n");
 					ai.steering += AIBehaviors::Wander(body, transform, TileMap::Instance().GetGrid(), std::get<AIBehaviors::WanderInfo>(info)) *= weight;
 					break;
 				case AIBehaviors::BehaviorType::Patrol:
-					ai.steering += weight * AIBehaviors::Patrol(body, transform, targetTransform, std::get<AIBehaviors::PatrolInfo>(info));
+					ai.steering +=  AIBehaviors::Patrol(body, transform, targetTransform, std::get<AIBehaviors::PatrolInfo>(info))*= weight;
 					break;
 				case AIBehaviors::BehaviorType::Flee:
-					ai.steering += weight * AIBehaviors::Flee(body, transform, targetTransform, std::get<AIBehaviors::FleeInfo>(info));
+					ai.steering +=  AIBehaviors::Flee(body, transform, targetTransform, std::get<AIBehaviors::FleeInfo>(info))*= weight;
 					break;
 				case AIBehaviors::BehaviorType::AvoidCollision:
 				//	printf("Avoiding\n");
@@ -60,6 +62,7 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 					break;
 				}
 			}
+			//printf("\n");
 		}
 	}
 }

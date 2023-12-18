@@ -114,7 +114,7 @@ public:
 
 
 
-	std::vector<Tile*> GetPath(Tile* startTile, Tile* endTile)
+	std::vector<Tile> GetPath(Tile* startTile, Tile* endTile)
 	{
 		//tiles that need to be evaluated
 		std::priority_queue<Tile*, std::vector<Tile*>, CompareTile> openSet;
@@ -162,9 +162,9 @@ public:
 			return {};
 		}
 		// Reconstruct path
-		std::vector<Tile*> path;
+		std::vector<Tile> path;
 		for (Tile* tile = endTile; tile != nullptr; tile = tile->parent) {
-			path.push_back(tile);
+			path.push_back(*tile);
 		}
 		std::ranges::reverse(path);
 
