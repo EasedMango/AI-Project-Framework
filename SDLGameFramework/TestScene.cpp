@@ -29,7 +29,7 @@
 
 ID playerID;
 ID aiID;
-
+ID aiIDPatrol;
 
 bool TestScene::OnCreate()
 {
@@ -50,7 +50,7 @@ bool TestScene::OnCreate()
 	registry.AddComponent<CameraComp>(playerID);
 	registry.AddComponent<Collider>(playerID, ColliderShape::CircleCollider, 1);
 	registry.AddComponent<CircleCollider>(playerID, glm::vec2(0, 0), 0.5f);
-
+	{
 	aiID = registry.CreateEntity();
 	registry.AddComponent<Transform>(aiID, glm::vec2(4, 4));
 	registry.AddComponent<Body>(aiID, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
@@ -87,10 +87,46 @@ bool TestScene::OnCreate()
 
 			return change;
 		}, wanderState.id);
+	}
+	//
+	{
+		aiIDPatrol = registry.CreateEntity();
+		registry.AddComponent<Transform>(aiIDPatrol, glm::vec2(2, 11.5));
+		registry.AddComponent<Body>(aiIDPatrol, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
+		registry.AddComponent<Sprite>(aiIDPatrol, renderer->CreateSprite("Care.png", 1));
+		registry.AddComponent<Collider>(aiIDPatrol, ColliderShape::CircleCollider, 1);
+		registry.AddComponent<CircleCollider>(aiIDPatrol, glm::vec2(0, 0), 0.5f);
+		registry.AddComponent<Vision>(aiIDPatrol, playerID, 5.f, 0.5f);
+		auto& stateMachine = registry.AddComponent<AI>(aiIDPatrol).stateMachine;
+
+		auto& seekState = stateMachine.AddState({ AIBehaviors::BehaviorType::Seek, AIBehaviors::SeekInfo{playerID,3.f},3.f });
+		seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
+		auto& patrolState = stateMachine.AddState({ AIBehaviors::BehaviorType::Patrol, AIBehaviors::PatrolInfo{playerID,glm::vec2(2.0f,12.0f),glm::vec2(14.0f,11.5f),false} });
+		patrolState.AddCondition([](VariableContainer& variables)
+			{
+				const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
+
+				if (change)
+				{
+					printf("seen\n");
+				}
 
 
+				return change;
+			}, seekState.id);
+		seekState.AddCondition([](VariableContainer& variables)
+			{
+				const bool change = (!variables.GetBool("Visible"));
 
+				if (change)
+				{
+					printf(" Not seen\n");
+				}
 
+				return change;
+			}, patrolState.id);
+	}
+	//
 	const auto& grid = TileMap::Instance("Map/64map.tsx").GetGrid();
 	const auto tiles = grid.GetTiles();
 	for (int i = 0; i < grid.GetWidth(); ++i)

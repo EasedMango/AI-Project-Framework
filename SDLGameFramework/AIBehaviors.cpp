@@ -257,12 +257,12 @@ SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& c
 	float distance = glm::length(direction);
 
 
-	SeekInfo si = SeekInfo{ 0,1.0f };
+	//SeekInfo si = SeekInfo{ 0,1.0f };
 
-	if (distance < 2) {
+	/*if (distance < 2) {
 
 		return Seek(characterBody, characterTrans, target, si);
-	}
+	}*/
 
 
 	//sets patrol point
