@@ -49,7 +49,7 @@ void AISystem::Update(const float& deltaTime, Registry& registry)
 					ai.steering += AIBehaviors::Wander(body, transform, TileMap::Instance().GetGrid(), std::get<AIBehaviors::WanderInfo>(info)) *= weight;
 					break;
 				case AIBehaviors::BehaviorType::Patrol:
-					ai.steering +=  AIBehaviors::Patrol(body, transform, targetTransform, std::get<AIBehaviors::PatrolInfo>(info))*= weight;
+					ai.steering +=  AIBehaviors::Patrol(body, transform, std::get<AIBehaviors::PatrolInfo>(info), TileMap::Instance().GetGrid())*= weight;
 					break;
 				case AIBehaviors::BehaviorType::Flee:
 					ai.steering +=  AIBehaviors::Flee(body, transform, targetTransform, std::get<AIBehaviors::FleeInfo>(info))*= weight;

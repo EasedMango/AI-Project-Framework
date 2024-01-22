@@ -74,11 +74,15 @@ namespace AIBehaviors {
 
 	struct PatrolInfo
 	{
-		ID target;
-		glm::vec2 patrolPointA;
-		glm::vec2 patrolPointB;
-		bool AtpointA;
+		
+		glm::vec2 point1;
+		glm::vec2 point2;
+		float speed;
+		std::vector<Tile> path;
+		int currentPathIndex;
 	};
+		
+	
 	using BehaviorInfo = std::variant<SeekInfo, ArriveInfo, ChaseInfo, FleeInfo, WanderInfo, PatrolInfo,AvoidCollisionInfo>;
 
 	struct WeightedBehavior
@@ -95,7 +99,7 @@ namespace AIBehaviors {
 
 	SteeringOutput Arrive(const Body& characterBody, const Transform& characterTrans, const Transform& target, ArriveInfo& info);
 
-	SteeringOutput Patrol(const Body& characterBody, const Transform& characterTrans, const Transform& target, PatrolInfo& info);
+	SteeringOutput Patrol(const Body& characterBody, const Transform& characterTrans, PatrolInfo& info, Grid& targetGrid);
 
 	SteeringOutput Wander(const Body& characterBody, const Transform& characterTrans, Grid& target, WanderInfo& info);
 

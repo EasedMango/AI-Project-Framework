@@ -248,49 +248,56 @@ SteeringOutput AIBehaviors::Arrive(const Body& characterBody, const Transform& c
 	return result;
 }
 
-SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& characterTrans, const Transform& target, PatrolInfo& info)
+SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& characterTrans, PatrolInfo& info, Grid& targetGrid)
 {
 	SteeringOutput steering;
 	steering.angular = 0;
 
-	glm::vec2 direction = target.pos - characterTrans.pos;
-	float distance = glm::length(direction);
+	
+	// Convert patrol points to tiles
+	Tile* tilePatrolPoint1 = targetGrid.GetTile(info.point1.x, info.point1.y);
+	Tile* tilePatrolPoint2 = targetGrid.GetTile(info.point2.x, info.point2.y);
+	
+	// Pathfinding update
+	if (info.path.empty())
+	{
+		// Set the patrol points as the start and end of the path
+		const auto path = targetGrid.GetPath(tilePatrolPoint1, tilePatrolPoint2);
 
+		if (path.empty()) {
+			return steering; // No path found, return empty steering.
+		}
 
-	//SeekInfo si = SeekInfo{ 0,1.0f };
-
-	/*if (distance < 2) {
-
-		return Seek(characterBody, characterTrans, target, si);
-	}*/
-
-
-	//sets patrol point
-	info.patrolPointA = glm::vec2(-6.0f, 4.0f);
-	info.patrolPointB = glm::vec2(6.0f, 4.0f);
-
-	//sets the starting posistion to be one of the points
-	glm::vec2 currentPosition;
-
-	if (info.AtpointA == true) {
-		steering.linear = info.patrolPointB - characterTrans.pos;
-		currentPosition = info.patrolPointB;
+		// Store the generated path and set the current path index.
+		info.path = path;
+		info.currentPathIndex = 0;
 	}
 
-	if (info.AtpointA == false) {
-		steering.linear = info.patrolPointA - characterTrans.pos;
-		currentPosition = info.patrolPointA;
+	auto targetTile = info.path[info.currentPathIndex];
+	const auto dirToNextTile = glm::vec2{ targetTile.x, targetTile.y } - characterTrans.pos;
+	const auto distance = glm::length(dirToNextTile);
+
+	if (distance < 0.5f)
+	{
+		// If the agent is close enough to the current target tile, move to the next one.
+		info.currentPathIndex++;
+		if (info.currentPathIndex >= info.path.size())
+		{
+			// If reached the end of the path, clear it.
+			info.currentPathIndex = 0;
+		}
 	}
 
-	direction = currentPosition - characterTrans.pos;
-	distance = glm::length(direction);
+	const Transform targetTrans = Transform{ glm::vec2{targetTile.x, targetTile.y}, 0 };
+	auto d = SeekInfo{ 0, 1.f };
+	auto s = Seek(characterBody, characterTrans, targetTrans, d);
 
-	if (distance <= 1.0f) {
-		info.AtpointA = !info.AtpointA;
-	}
-
-	return steering;
+	return s;
 }
+
+
+
+
 
 
 

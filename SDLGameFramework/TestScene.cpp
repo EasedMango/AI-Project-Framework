@@ -93,16 +93,17 @@ bool TestScene::OnCreate()
 		aiIDPatrol = registry.CreateEntity();
 		registry.AddComponent<Transform>(aiIDPatrol, glm::vec2(2, 11.5));
 		registry.AddComponent<Body>(aiIDPatrol, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
-		registry.AddComponent<Sprite>(aiIDPatrol, renderer->CreateSprite("Care.png", 1));
+		registry.AddComponent<Sprite>(aiIDPatrol, renderer->CreateSprite("Scarecrow.png", 1));
 		registry.AddComponent<Collider>(aiIDPatrol, ColliderShape::CircleCollider, 1);
 		registry.AddComponent<CircleCollider>(aiIDPatrol, glm::vec2(0, 0), 0.5f);
 		registry.AddComponent<Vision>(aiIDPatrol, playerID, 5.f, 0.5f);
 		auto& stateMachine = registry.AddComponent<AI>(aiIDPatrol).stateMachine;
-
+		
 		auto& seekState = stateMachine.AddState({ AIBehaviors::BehaviorType::Seek, AIBehaviors::SeekInfo{playerID,3.f},3.f });
 		seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
-		auto& patrolState = stateMachine.AddState({ AIBehaviors::BehaviorType::Patrol, AIBehaviors::PatrolInfo{playerID,glm::vec2(2.0f,12.0f),glm::vec2(14.0f,11.5f),false} });
-		patrolState.AddCondition([](VariableContainer& variables)
+		auto& patrolState = stateMachine.AddState({ AIBehaviors::BehaviorType::Patrol, AIBehaviors::PatrolInfo{glm::vec2(2, 11.5),glm::vec2(15, 11.5),1,std::vector<Tile>(),0},1.f });
+		stateMachine.SetState(1);
+		/*patrolState.AddCondition([](VariableContainer& variables)
 			{
 				const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
 
@@ -124,7 +125,7 @@ bool TestScene::OnCreate()
 				}
 
 				return change;
-			}, patrolState.id);
+			}, patrolState.id);*/
 	}
 	//
 	const auto& grid = TileMap::Instance("Map/64map.tsx").GetGrid();
