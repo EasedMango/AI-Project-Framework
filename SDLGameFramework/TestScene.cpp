@@ -74,29 +74,30 @@ bool TestScene::OnCreate()
 
 
 				return change;
-			}, fleeState.id);
+			}, seekState.id);
 		seekState.AddCondition([](VariableContainer& variables)
 			{
-				const bool change = (!variables.GetBool("Visible"));
 
-				if (change)
-				{
-					printf("Player Not Visible\n");
-				}
+				const bool run = (!variables.GetBool("Distance") < 1.5f);
 
-				return change;
-			}, wanderState.id);
-		fleeState.AddCondition([](VariableContainer& variables) // this doesnt break anything but isnt doing anything, need to fix, and maybe attatch to a health system instead of distance
-			{
-				const bool change = (!variables.GetBool("Distance") < 2.0f);
-
-				if (change)
+				if (run)
 				{
 					printf("Too Close\n");
 				}
 
+				return run;
+			}, fleeState.id);
+		fleeState.AddCondition([](VariableContainer& variables) 
+			{
+				const bool change = (!variables.GetBool("Visible")) && (variables.GetFloat("Distance") > 7.f);
+
+				if (change)
+				{
+					printf("Player Not Visible\n");					
+				}
+
 				return change;
-			}, seekState.id);
+			}, wanderState.id);
 	}
 
 	/*{
