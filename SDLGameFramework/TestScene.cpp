@@ -103,7 +103,7 @@ bool TestScene::OnCreate()
 		seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
 		auto& patrolState = stateMachine.AddState({ AIBehaviors::BehaviorType::Patrol, AIBehaviors::PatrolInfo{glm::vec2(2, 11.5),glm::vec2(15, 11.5),1,std::vector<Tile>(),0},1.f });
 		stateMachine.SetState(1);
-		/*patrolState.AddCondition([](VariableContainer& variables)
+		patrolState.AddCondition([](VariableContainer& variables)
 			{
 				const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
 
@@ -125,7 +125,7 @@ bool TestScene::OnCreate()
 				}
 
 				return change;
-			}, patrolState.id);*/
+			}, patrolState.id);
 	}
 	//
 	const auto& grid = TileMap::Instance("Map/64map.tsx").GetGrid();
