@@ -62,6 +62,7 @@ bool TestScene::OnCreate()
 		auto& seekState = stateMachine.AddState({ AIBehaviors::BehaviorType::Seek, AIBehaviors::SeekInfo{playerID,3.f},3.f });
 		seekState.AddBehavior(AIBehaviors::BehaviorType::AvoidCollision, AIBehaviors::AvoidCollisionInfo{ 1.f }, 0.25f);
 		auto& wanderState = stateMachine.AddState({ AIBehaviors::BehaviorType::Wander, AIBehaviors::WanderInfo{10,glm::vec2(9.5f,7.f),1,std::vector<Tile>(),0},1.f });
+		auto& fleeState = stateMachine.AddState({ AIBehaviors::BehaviorType::Flee, AIBehaviors::FleeInfo{playerID,3.f},3.f });
 		wanderState.AddCondition([](VariableContainer& variables)
 			{
 				const bool change = (variables.GetBool("Visible")) && (variables.GetFloat("Distance") < 5.f);
@@ -85,9 +86,20 @@ bool TestScene::OnCreate()
 
 				return change;
 			}, wanderState.id);
+		fleeState.AddCondition([](VariableContainer& variables) // this doesnt break anything but isnt doing anything, need to fix, and maybe attatch to a health system instead of distance
+			{
+				const bool change = (!variables.GetBool("Distance") < 3.0f);
+
+				if (change)
+				{
+					printf("Too Close");
+				}
+
+				return change;
+			}, wanderState.id);
 	}
 
-	{
+	/*{
 		aiID2 = registry.CreateEntity();
 		registry.AddComponent<Transform>(aiID2, glm::vec2(5, 4));
 		registry.AddComponent<Body>(aiID2, glm::vec2(0, 0), glm::vec2(0, 0), 1, 0, 0, 0, 2, 50, 3, 3, 1);
@@ -122,7 +134,7 @@ bool TestScene::OnCreate()
 
 				return change;
 			}, wanderState.id);
-	}
+	}*/
 
 	//aiID = registry.CreateEntity();
 	//registry.AddComponent<Transform>(aiID, glm::vec2(4, 4));
