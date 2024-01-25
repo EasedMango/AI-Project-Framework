@@ -78,7 +78,7 @@ bool TestScene::OnCreate()
 		seekState.AddCondition([](VariableContainer& variables)
 			{
 
-				const bool run = (!variables.GetBool("Distance") < 1.5f);
+				const bool run = (variables.GetFloat("Distance") < 1.5f);
 
 				if (run)
 				{
@@ -89,7 +89,7 @@ bool TestScene::OnCreate()
 			}, fleeState.id);
 		fleeState.AddCondition([](VariableContainer& variables) 
 			{
-				const bool change = (!variables.GetBool("Visible")) && (variables.GetFloat("Distance") > 7.f);
+				const bool change = (!variables.GetBool("Visible"));
 
 				if (change)
 				{
