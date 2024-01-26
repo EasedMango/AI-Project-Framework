@@ -252,10 +252,11 @@ SteeringOutput AIBehaviors::Patrol(const Body& characterBody, const Transform& c
 {
 	SteeringOutput steering;
 	steering.angular = 0;
-
+	
 	
 	// Convert patrol points to tiles
-	Tile* tilePatrolPoint1 = targetGrid.GetTile(info.point1.x, info.point1.y);
+	//Tile* tilePatrolPoint1 = targetGrid.GetTile(info.point1.x, info.point1.y);
+	Tile* tilePatrolPoint1 = targetGrid.GetTile(characterTrans.pos.x, characterTrans.pos.y);
 	Tile* tilePatrolPoint2 = targetGrid.GetTile(info.point2.x, info.point2.y);
 	
 	// Pathfinding update
